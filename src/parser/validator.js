@@ -2,8 +2,9 @@
  * Super Earth Terminal - Markup Validation & Crash Safety Intercept
  */
 
-export const CRASH_HAZARD_REGEX = /<f=(0[4-9]|[1-9][0-9])>/i;
-export const FAT_TAG_REGEX = /<f=([0-9]{2})>/i;
+// Safe font indices: 00/01 (bold), 02 (invisible), 03 (removed), 05 (HUD icons), 32 (Illuminate font)
+export const SAFE_FONT_INDICES = new Set(['00', '0', '01', '1', '02', '2', '03', '3', '05', '5', '32']);
+export const FAT_TAG_REGEX = /<f=([0-9]{1,2})>/gi;
 
 // Verified list of Helldivers 2 engine symbols
 export const KNOWN_SYMBOLS = ['★', '☆', '♥', '☠︎', '☯︎', 'Ω︎', '☀︎', '☁︎', '☂︎', '❄︎', '☢︎', '☣︎', '✌︎', '×͜×', '🐲'];
@@ -19,11 +20,28 @@ export function validateMarkup(text, mode = 'chat') {
   const length = text ? Array.from(text).length : 0; // Unicode-aware length
   const overBudget = length > maxLimit;
 
-  // 1. Crash Hazard Check (<f=04> through <f=99>)
-  const crashMatch = text ? text.match(CRASH_HAZARD_REGEX) : null;
-  const hasCrashHazard = !!crashMatch;
-  const crashTag = crashMatch ? crashMatch[0] : null;
+  // 1. Crash Hazard Check (<f=04> through <f=99>, except safe 05 and 32; and empty <f=03></f>)
+  let hasCrashHazard = false;
+  let crashTag = null;
 
+  if (text) {
+    // Empty <f=03></f> triggers client crash
+    if (/<f=03>\s*<\/f>/i.test(text)) {
+      hasCrashHazard = true;
+      crashTag = '<f=03></f>';
+    } else {
+      const fatMatches = text.matchAll(/<f=([0-9]{1,2})>/gi);
+      for (const m of fatMatches) {
+        const rawIdx = m[1];
+        const paddedIdx = rawIdx.padStart(2, '0');
+        if (!SAFE_FONT_INDICES.has(rawIdx) && !SAFE_FONT_INDICES.has(paddedIdx)) {
+          hasCrashHazard = true;
+          crashTag = m[0];
+          break;
+        }
+      }
+    }
+  }
   // 2. Symbol in Fat Tag warning (Engine breaks symbols when wrapped in <f=XX>)
   let symbolFatWarning = false;
   if (text && /<f=[0-9]{2}>/i.test(text)) {

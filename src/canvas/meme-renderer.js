@@ -151,7 +151,112 @@ function drawRankShield(ctx, x, y, width = 44, height = 58) {
 
   ctx.restore();
 }
+/**
+ * Draws procedural Helldivers 2 internal HUD glyphs (<f=05>1..7)
+ */
+function drawHudGlyph(ctx, type, x, y, size, color) {
+  ctx.save();
+  ctx.fillStyle = color || '#FFE800';
+  ctx.strokeStyle = color || '#FFE800';
+  ctx.lineWidth = 1.6;
 
+  const iconW = size * 0.95;
+  const iconH = size * 0.95;
+  const topY = y - iconH * 0.85;
+
+  if (type === '5') {
+    // Bunker / Vault Door
+    ctx.beginPath();
+    ctx.strokeRect(x, topY, iconW, iconH);
+    ctx.beginPath();
+    ctx.moveTo(x + iconW / 2, topY);
+    ctx.lineTo(x + iconW / 2, topY + iconH);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(x + iconW / 2, topY + iconH / 2, iconW * 0.22, 0, Math.PI * 2);
+    ctx.stroke();
+  } else if (type === '3') {
+    // Super Uranium Sample (Diamond)
+    ctx.beginPath();
+    ctx.moveTo(x + iconW / 2, topY);
+    ctx.lineTo(x + iconW, topY + iconH / 2);
+    ctx.lineTo(x + iconW / 2, topY + iconH);
+    ctx.lineTo(x, topY + iconH / 2);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+    ctx.stroke();
+  } else if (type === '7') {
+    // Rare Sample (Square)
+    ctx.beginPath();
+    ctx.rect(x + iconW * 0.1, topY + iconH * 0.1, iconW * 0.8, iconH * 0.8);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(10, 12, 16, 0.85)';
+    ctx.fillRect(x + iconW * 0.35, topY + iconH * 0.35, iconW * 0.3, iconH * 0.3);
+  } else if (type === '1') {
+    // Common Sample (Circle)
+    ctx.beginPath();
+    ctx.arc(x + iconW / 2, topY + iconH / 2, iconW * 0.42, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+    ctx.stroke();
+  } else {
+    ctx.fillText(type, x, y);
+  }
+
+  ctx.restore();
+  return iconW + 4;
+}
+
+/**
+ * Renders formatted span with support for <f=05> HUD glyphs and <f=32> Illuminate font
+ */
+function renderSpan(ctx, span, x, y, baseFontSize, fallbackFontWeight = 'normal') {
+  const spanFontSize = Math.round(baseFontSize * span.scale);
+  const isIlluminate = span.font === 32;
+  const isHudFont = span.font === 5;
+  const weight = span.bold ? 'bold' : fallbackFontWeight;
+
+  ctx.font = `${weight} ${spanFontSize}px ${isIlluminate ? '"Courier New", monospace' : '"Segoe UI", sans-serif'}`;
+  ctx.fillStyle = span.color;
+
+  let curX = x;
+  if (isHudFont) {
+    const chars = Array.from(span.text);
+    for (const ch of chars) {
+      if (['1', '3', '5', '7'].includes(ch)) {
+        const drawnW = drawHudGlyph(ctx, ch, curX, y, spanFontSize, span.color);
+        curX += drawnW;
+      } else {
+        ctx.fillText(ch, curX, y);
+        curX += ctx.measureText(ch).width;
+      }
+    }
+    return curX - x;
+  }
+
+  ctx.fillText(span.text, curX, y);
+  return ctx.measureText(span.text).width;
+}
+
+/**
+ * Measures total rendered width of a span including glyph widths
+ */
+function measureSpan(ctx, span, baseFontSize) {
+  const spanFontSize = Math.round(baseFontSize * span.scale);
+  if (span.font === 5) {
+    let totalW = 0;
+    for (const ch of Array.from(span.text)) {
+      if (['1', '3', '5', '7'].includes(ch)) {
+        totalW += spanFontSize * 0.95 + 4;
+      } else {
+        totalW += ctx.measureText(ch).width;
+      }
+    }
+    return totalW;
+  }
+  return ctx.measureText(span.text).width;
+}
 /**
  * Renders In-Game Tactical Chat HUD
  */
@@ -237,24 +342,24 @@ export function renderTacticalChat(canvas, options = {}) {
   cursorX += ctx.measureText(callsignText).width;
 
   // Formatted Spans
+  // Formatted Spans
   const spans = parseMarkup(rawMarkup, '#FFFFFF');
   for (const span of spans) {
     if (span.removed || span.invisible) continue;
 
     const spanFontSize = Math.round(baseFontSize * span.scale);
     ctx.font = `${span.bold ? 'bold' : 'normal'} ${spanFontSize}px "Segoe UI", sans-serif`;
-    ctx.fillStyle = span.color;
+    const textWidth = measureSpan(ctx, span, baseFontSize);
 
     // Check boundary
-    const textWidth = ctx.measureText(span.text).width;
     if (cursorX + textWidth > hudX + hudWidth - paddingX - 20) {
       // Wrap to next line
-      currentY += spanFontSize * 1.3;
+      currentY += spanFontSize * 1.35;
       cursorX = hudX + paddingX + 24;
     }
 
-    ctx.fillText(span.text, cursorX, currentY);
-    cursorX += textWidth;
+    const advance = renderSpan(ctx, span, cursorX, currentY, baseFontSize, 'normal');
+    cursorX += advance;
   }
 
   // Scrollbar indicator on right
@@ -342,13 +447,8 @@ export function renderNameplateCard(canvas, options = {}) {
 
   for (const span of spans) {
     if (span.removed || span.invisible) continue;
-
-    const spanFontSize = Math.round(nameBaseSize * span.scale);
-    ctx.font = `${span.bold ? 'bold' : '600'} ${spanFontSize}px "Segoe UI", sans-serif`;
-    ctx.fillStyle = span.color;
-
-    ctx.fillText(span.text, cursorX, nameY);
-    cursorX += ctx.measureText(span.text).width;
+    const advance = renderSpan(ctx, span, cursorX, nameY, nameBaseSize, '600');
+    cursorX += advance;
   }
 
   // Player Title (CADET)

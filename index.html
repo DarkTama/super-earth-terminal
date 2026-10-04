@@ -36,11 +36,11 @@
     <div class="mode-switcher">
       <button id="tabSteamName" class="mode-tab active" data-mode="steam">
         <span>[ STEAM NAME ]</span>
-        <span class="mode-badge">32 CHAR LIMIT // NAMEPLATE CARD</span>
+        <span class="mode-badge">32 CHAR LIMIT // ⚠️ PATCHED (MEME ONLY)</span>
       </button>
       <button id="tabTacticalChat" class="mode-tab" data-mode="chat">
         <span>[ TACTICAL CHAT ]</span>
-        <span class="mode-badge">100 CHAR LIMIT // IN-GAME HUD</span>
+        <span class="mode-badge">100 CHAR LIMIT // IN-GAME MACRO HUD</span>
       </button>
     </div>
 
@@ -64,6 +64,11 @@
           <span id="targetModeLabel" class="mode-badge" style="color: var(--cyan-system); border: 1px solid var(--border-tactical);">TARGET: STEAM NAME</span>
         </div>
 
+        <!-- Steam Name In-Game Deprecation Notice -->
+        <div id="steamDeprecatedBanner" class="alert-banner warning" style="margin-bottom: 0.75rem; font-size: 0.8rem; display: flex;">
+          <span>⚠️</span>
+          <span>STEAM NAME NOTICE: Arrowhead masks tags to asterisks (************) in-game. Use this mode for Nameplate card memes &amp; Discord banners.</span>
+        </div>
         <!-- Presets Bar -->
         <div class="presets-section">
           <div class="presets-label">Tactical Transmissions & Archetypes:</div>
@@ -143,14 +148,40 @@
                 <span>Minify markup (Strip redundant tail tags)</span>
               </label>
             </div>
+
+            <div class="advanced-row">
+              <span class="advanced-label">AUTOHOTKEY SCRIPT:</span>
+              <button class="btn-tool" id="btnExportAhk" title="Download AutoHotkey (.ahk) script to type message with F8">📥 DOWNLOAD .AHK SCRIPT</button>
+            </div>
           </div>
         </details>
 
-        <!-- Transmit Action Button -->
-        <button id="btnTransmit" class="btn-transmit">
-          <span>⚡</span>
-          <span>TRANSMIT TO CLIPBOARD</span>
-        </button>
+        <!-- Action Row -->
+        <div class="action-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 1rem;">
+          <button id="btnTransmit" class="btn-transmit">
+            <span>⚡</span>
+            <span>TRANSMIT RAW</span>
+          </button>
+          <button id="btnCopyViaMacro" class="btn-transmit" style="background: #1D4ED8; color: #FFFFFF; border-color: #3B82F6;">
+            <span>⌨️</span>
+            <span>COPY VIA MACRO</span>
+          </button>
+        </div>
+
+        <!-- VIA Macro Mode Toggle -->
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 0.5rem; padding: 6px 12px; background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border-tactical); font-size: 0.75rem; font-family: var(--font-mono);">
+          <span style="color: var(--text-dim);">VIA MACRO MODE:</span>
+          <div style="display: flex; gap: 14px;">
+            <label style="cursor: pointer; display: flex; align-items: center; gap: 4px; color: var(--text-bright);">
+              <input type="radio" name="macroExecMode" value="immediate" checked style="accent-color: var(--yellow-se);">
+              <span>Immediate Send</span>
+            </label>
+            <label style="cursor: pointer; display: flex; align-items: center; gap: 4px; color: var(--text-bright);">
+              <input type="radio" name="macroExecMode" value="draft" style="accent-color: var(--yellow-se);">
+              <span>Draft (Type Only)</span>
+            </label>
+          </div>
+        </div>
       </section>
 
       <!-- Right Column: Live Tactical Preview & Meme Generator -->

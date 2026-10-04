@@ -120,7 +120,7 @@ export function parseMarkup(rawText, defaultColor = '#FFFFFF') {
   let currentBold = false;
   let currentInvisible = false;
   let currentRemoved = false;
-
+  let currentFont = 0; // 0 = standard, 5 = HUD icons, 32 = Illuminate
   let match;
   while ((match = tagRegex.exec(rawText)) !== null) {
     const textChunk = rawText.slice(lastIndex, match.index);
@@ -134,7 +134,8 @@ export function parseMarkup(rawText, defaultColor = '#FFFFFF') {
         scale: currentSize / 20,
         bold: currentBold,
         invisible: currentInvisible,
-        removed: currentRemoved
+        removed: currentRemoved,
+        font: currentFont
       });
     }
 
@@ -152,7 +153,7 @@ export function parseMarkup(rawText, defaultColor = '#FFFFFF') {
         currentBold = false;
         currentInvisible = false;
         currentRemoved = false;
-      } else if (tagType === 'i') {
+        currentFont = 0;
         currentInvisible = false;
       }
     } else {
@@ -178,10 +179,15 @@ export function parseMarkup(rawText, defaultColor = '#FFFFFF') {
           currentBold = true;
           currentInvisible = false;
           currentRemoved = false;
+          currentFont = 0;
         } else if (fatNum === 2) {
           currentInvisible = true;
         } else if (fatNum === 3) {
           currentRemoved = true;
+        } else if (fatNum === 5) {
+          currentFont = 5;
+        } else if (fatNum === 32) {
+          currentFont = 32;
         }
       } else if (tagType === 'i') {
         const indexNum = parseInt(tagValue, 10);
@@ -210,9 +216,80 @@ export function parseMarkup(rawText, defaultColor = '#FFFFFF') {
       scale: currentSize / 20,
       bold: currentBold,
       invisible: currentInvisible,
-      removed: currentRemoved
+      removed: currentRemoved,
+      font: currentFont
     });
   }
 
   return spans;
+}
+
+/**
+ * Formats raw markup buffer into standard VIA / QMK macro syntax
+ * @param {string} rawText - Input string
+ * @param {object} options - Macro formatting options
+ * @returns {string} VIA macro string
+ */
+export function formatViaMacro(rawText, options = {}) {
+  const {
+    mode = 'immediate', // 'immediate' | 'draft' | 'insert'
+    openDelay = 100,
+    sendDelay = 50,
+    minify = true
+  } = options;
+
+  const payload = minify ? minifyMarkup(rawText || '') : (rawText || '');
+
+  if (mode === 'immediate') {
+    return `{KC_ENT}{${openDelay}}${payload}{${sendDelay}}{KC_ENT}`;
+  }
+  if (mode === 'draft') {
+    return `{KC_ENT}{${openDelay}}${payload}`;
+  }
+  return payload;
+}
+
+/**
+ * Generates a ready-to-run AutoHotkey v2 script for typing chat messages
+ * @param {string} rawText - Input string
+ * @param {object} options - Script options
+ * @returns {string} AHK v2 script contents
+ */
+export function generateAhkScript(rawText, options = {}) {
+  const {
+    hotkey = 'F8',
+    openDelay = 90,
+    sendDelay = 50,
+    mode = 'immediate',
+    minify = true
+  } = options;
+
+  const payload = minify ? minifyMarkup(rawText || '') : (rawText || '');
+  const safePayload = payload.replace(/"/g, '""');
+
+  if (mode === 'draft') {
+    return `#Requires AutoHotkey v2.0
+#SingleInstance Force
+
+; Super Earth Terminal - Keystroke Macro (Draft Mode)
+${hotkey}:: {
+    SendEvent("{Enter}")
+    Sleep ${openDelay}
+    SendEvent("${safePayload}")
+}
+`;
+  }
+
+  return `#Requires AutoHotkey v2.0
+#SingleInstance Force
+
+; Super Earth Terminal - Keystroke Macro (Immediate Send)
+${hotkey}:: {
+    SendEvent("{Enter}")
+    Sleep ${openDelay}
+    SendEvent("${safePayload}")
+    Sleep ${sendDelay}
+    SendEvent("{Enter}")
+}
+`;
 }

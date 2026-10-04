@@ -9,7 +9,9 @@ import {
   buildColorTag,
   buildSizeTag,
   buildFatTag,
-  buildIndexTag
+  buildIndexTag,
+  formatViaMacro,
+  generateAhkScript
 } from './parser/markup.js';
 import { validateMarkup } from './parser/validator.js';
 import {
@@ -42,6 +44,7 @@ const state = {
   playerXP: '3,252 / 11,000',
   memeCaption: '',
   minify: true,
+  macroExecMode: 'immediate',
   lastHazardState: false
 };
 
@@ -53,6 +56,7 @@ const elements = {
   crashHazardBanner: document.getElementById('crashHazardBanner'),
   crashHazardText: document.getElementById('crashHazardText'),
   symbolWarningBanner: document.getElementById('symbolWarningBanner'),
+  steamDeprecatedBanner: document.getElementById('steamDeprecatedBanner'),
   presetsList: document.getElementById('presetsList'),
   quickSwatches: document.getElementById('quickSwatches'),
   nativeColorPicker: document.getElementById('nativeColorPicker'),
@@ -68,6 +72,9 @@ const elements = {
   btnIndex1: document.getElementById('btnIndex1'),
   btnIndex2: document.getElementById('btnIndex2'),
   btnTransmit: document.getElementById('btnTransmit'),
+  btnCopyViaMacro: document.getElementById('btnCopyViaMacro'),
+  btnExportAhk: document.getElementById('btnExportAhk'),
+  radioMacroModes: document.querySelectorAll('input[name="macroExecMode"]'),
   btnAudioToggle: document.getElementById('btnAudioToggle'),
   audioIcon: document.getElementById('audioIcon'),
   audioLabel: document.getElementById('audioLabel'),
@@ -105,6 +112,32 @@ function showToast(message) {
   }, 3200);
 }
 
+/**
+ * Copies text with navigator.clipboard and reliable fallback
+ */
+async function copyTextToClipboard(text) {
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch {}
+
+  try {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    const success = document.execCommand('copy');
+    document.body.removeChild(textarea);
+    return success;
+  } catch {
+    return false;
+  }
+}
 /**
  * Inserts or wraps text at active textarea selection/caret
  */
@@ -189,9 +222,9 @@ function renderSymbolTray() {
       const end = textarea.selectionEnd;
       const original = textarea.value;
 
-      textarea.value = original.substring(0, start) + item.symbol + original.substring(end);
-      textarea.setSelectionRange(start + item.symbol.length, start + item.symbol.length);
-      textarea.focus();
+      const textToInsert = item.insertText || item.symbol;
+      textarea.value = original.substring(0, start) + textToInsert + original.substring(end);
+      textarea.setSelectionRange(start + textToInsert.length, start + textToInsert.length);
       updateUI();
     });
     elements.symbolTray.appendChild(btn);
@@ -229,6 +262,8 @@ function updateUI() {
     elements.crashHazardBanner.style.display = 'flex';
     elements.crashHazardText.textContent = `CRASH HAZARD DETECTED // ENGINE INSTABILITY RISK (${validation.crashTag} will crash Helldivers 2 client). Clipboard transmission locked.`;
     elements.btnTransmit.disabled = true;
+    if (elements.btnCopyViaMacro) elements.btnCopyViaMacro.disabled = true;
+    if (elements.btnExportAhk) elements.btnExportAhk.disabled = true;
     if (!state.lastHazardState) {
       synth.playHazard();
       state.lastHazardState = true;
@@ -236,6 +271,8 @@ function updateUI() {
   } else {
     elements.crashHazardBanner.style.display = 'none';
     elements.btnTransmit.disabled = false;
+    if (elements.btnCopyViaMacro) elements.btnCopyViaMacro.disabled = false;
+    if (elements.btnExportAhk) elements.btnExportAhk.disabled = false;
     state.lastHazardState = false;
   }
 
@@ -292,12 +329,14 @@ function setTargetMode(mode) {
     elements.targetModeLabel.textContent = 'TARGET: STEAM NAME';
     state.previewMode = 'nameplate';
     elements.selectPreviewMode.value = 'nameplate';
+    if (elements.steamDeprecatedBanner) elements.steamDeprecatedBanner.style.display = 'flex';
   } else {
     elements.tabTacticalChat.classList.add('active');
     elements.tabSteamName.classList.remove('active');
     elements.targetModeLabel.textContent = 'TARGET: TACTICAL CHAT';
     state.previewMode = 'chat';
     elements.selectPreviewMode.value = 'chat';
+    if (elements.steamDeprecatedBanner) elements.steamDeprecatedBanner.style.display = 'none';
   }
 
   syncPreviewModeFields();
@@ -384,26 +423,64 @@ function setupEvents() {
     if (state.minify) {
       textToCopy = minifyMarkup(textToCopy);
     }
-
-    try {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        await navigator.clipboard.writeText(textToCopy);
-      } else {
-        // Fallback
-        const textarea = document.createElement('textarea');
-        textarea.value = textToCopy;
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textarea);
-      }
+    const ok = await copyTextToClipboard(textToCopy);
+    if (ok) {
       synth.playTransmit();
       showToast('TRANSMISSION BUFFER LOADED // READY FOR IN-GAME CHAT');
-    } catch {
+    } else {
       showToast('ERROR: CLIPBOARD WRITE PERMISSION BLOCKED');
     }
   });
 
+  // Copy VIA Macro Button
+  if (elements.btnCopyViaMacro) {
+    elements.btnCopyViaMacro.addEventListener('click', async () => {
+      const macroStr = formatViaMacro(elements.rawInput.value, {
+        mode: state.macroExecMode,
+        minify: state.minify
+      });
+      const ok = await copyTextToClipboard(macroStr);
+      if (ok) {
+        synth.playTransmit();
+        const modeLabel = state.macroExecMode === 'immediate' ? 'IMMEDIATE SEND' : 'DRAFT ONLY';
+        showToast(`VIA MACRO COPIED (${modeLabel}) // PASTE INTO USEVIA.APP`);
+      } else {
+        showToast('ERROR: CLIPBOARD WRITE PERMISSION BLOCKED');
+      }
+    });
+  }
+
+  // Macro Exec Mode Radios
+  elements.radioMacroModes.forEach((radio) => {
+    radio.addEventListener('change', (e) => {
+      if (e.target.checked) {
+        synth.playClick();
+        state.macroExecMode = e.target.value;
+      }
+    });
+  });
+
+  // Download AHK Script
+  if (elements.btnExportAhk) {
+    elements.btnExportAhk.addEventListener('click', () => {
+      synth.playClick();
+      const script = generateAhkScript(elements.rawInput.value, {
+        hotkey: 'F8',
+        mode: state.macroExecMode,
+        minify: state.minify
+      });
+      const blob = new Blob([script], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `helldivers-macro-${Date.now()}.ahk`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('AUTOHOTKEY (.AHK) SCRIPT DOWNLOADED // RUN WITH AHK V2');
+    });
+  }
   // Audio Toggle
   elements.btnAudioToggle.addEventListener('click', () => {
     const muted = synth.toggleMute();

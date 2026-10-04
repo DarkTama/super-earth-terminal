@@ -60,6 +60,34 @@ export const STEAM_NAME_PRESETS = [
 
 export const TACTICAL_CHAT_PRESETS = [
   {
+    category: 'HUD Callout',
+    title: '🚪 Bunker on My Pin',
+    colorHex: '#FF5F1F',
+    desc: 'Bunker door HUD icon & location pin',
+    raw: '<c=FFFF5F1F><f=05>5 Bunker on My Pin'
+  },
+  {
+    category: 'HUD Callout',
+    title: '💎 Super Uranium Located',
+    colorHex: '#FF00FF',
+    desc: 'Super Sample diamond HUD icon',
+    raw: '<c=FFFF00FF><f=05>3 Super Uranium Located!'
+  },
+  {
+    category: 'HUD Callout',
+    title: '🔶 Rare Sample on Pin',
+    colorHex: '#FF9900',
+    desc: 'Rare Sample square HUD icon',
+    raw: '<c=FFFF9900><f=05>7 Rare Sample on Pin'
+  },
+  {
+    category: 'Hazard Alert',
+    title: '🚨 380mm Barrage Incoming',
+    colorHex: '#FF0033',
+    desc: 'Heroic bold red danger callout',
+    raw: '<c=FFFF0033><f=00><s=30>DANGER: 380MM BARRAGE INCOMING!'
+  },
+  {
     category: 'System Discovery',
     title: 'Minor Place of Interest',
     colorHex: '#7DF9FF',
