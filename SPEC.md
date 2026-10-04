@@ -109,8 +109,15 @@
 ### 3.9 VIA & Hardware Keystroke Macro Generator (Planned)
 - Because Helldivers 2 chat engine does not handle OS clipboard `Ctrl+V`, formatted strings cannot be pasted directly into in-game chat.
 - The terminal will feature a dedicated **"COPY VIA MACRO"** action button.
-- Converts formatted buffer into standard VIA macro format:
-  ```text
-  {KC_ENT}{100}[PAYLOAD]{50}{KC_ENT}
-  ```
-- Supports 1-click clipboard copy of the macro syntax for instant pasting into VIA (`usevia.app`), compatible with NuPhy, Keychron, and QMK hardware keyboards.
+- **Transmission Mode Selector Toggle**:
+  - **Option 1: Immediate Send (Autopilot):**
+    ```text
+    {KC_ENT}{100}[PAYLOAD]{50}{KC_ENT}
+    ```
+    Opens chat prompt, types formatted buffer, and sends immediately. Ideal for rapid combat alerts (380mm barrage, bunker ping).
+  - **Option 2: Type Only / Draft (Review & Append):**
+    ```text
+    {KC_ENT}{100}[PAYLOAD]
+    ```
+    Opens chat prompt and types formatted tags/symbols, but leaves the prompt open without sending. Allows player to inspect, add personalized text, or confirm before manual send.
+- Supports 1-click clipboard copy of the configured macro syntax for instant pasting into VIA (`usevia.app`), compatible with NuPhy, Keychron, and QMK hardware keyboards.

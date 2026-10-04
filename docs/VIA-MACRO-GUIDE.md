@@ -45,18 +45,30 @@ Bypasses the engine's `Ctrl+V` clipboard block. Executes inside keyboard MCU. Ze
 
 ---
 
-## 4. VIA Macro Syntax Rules
+## 4. VIA Macro Syntax & Execution Modes
 
-Format:
+### Mode A: Immediate Send (Autopilot / Combat Callouts)
+Opens chat, types formatted payload, and immediately transmits message.
 ```text
-{KC_ENT}{OPEN_DELAY}[PAYLOAD]{SEND_DELAY}{KC_ENT}
+{KC_ENT}{100}[PAYLOAD]{50}{KC_ENT}
 ```
-
-- `{KC_ENT}`: Presses `Enter`.
-- `{100}`: 100ms hardware delay. Allows game UI time to open chat text field before typing starts.
-- `[PAYLOAD]`: Tagged text string (max 100 characters in-game limit).
+- `{KC_ENT}`: Presses `Enter` to open chat box.
+- `{100}`: 100ms hardware delay for game UI prompt to open.
+- `[PAYLOAD]`: Tagged text string (max 100 characters).
 - `{50}`: 50ms buffer delay before transmit.
 - `{KC_ENT}`: Presses `Enter` to send message to squad.
+
+### Mode B: Type Only / Draft (Review & Append)
+Opens chat and types formatted payload, but **does not send**. Leaves cursor at end of line so player can review, add extra text, or cancel.
+```text
+{KC_ENT}{100}[PAYLOAD]
+```
+
+### Mode C: Raw In-Chat Insert (No Enter)
+Assumes chat box already open. Injects tags/symbols at current cursor position.
+```text
+[PAYLOAD]
+```
 
 ---
 
