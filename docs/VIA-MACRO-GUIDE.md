@@ -47,6 +47,12 @@ Bypasses the engine's `Ctrl+V` clipboard block. Executes inside keyboard MCU. Ze
 
 ## 4. VIA Macro Syntax & Execution Modes
 
+> ⚠️ **CRITICAL IN-GAME USAGE RULE:**  
+> **Do NOT press Enter before triggering a Mode A or Mode B macro!**  
+> Modes A and B already begin with `{KC_ENT}`. If you manually open chat first and then hit the macro key, the macro's `{KC_ENT}` will **close** your chat box, and the remaining formatted payload will be typed directly into the active gameplay window as movement, weapon swap, and Stratagem keystrokes!  
+> - **For Mode A & Mode B:** Simply hit the macro key while playing (do not touch Enter).  
+> - **If you prefer opening chat manually first:** Use **Mode C: In-Chat Only** (`[PAYLOAD]`), which contains no Enter keycodes.
+
 ### Mode A: Immediate Send (Autopilot / Combat Callouts)
 Opens chat, types formatted payload, and immediately transmits message.
 ```text

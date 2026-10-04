@@ -169,16 +169,23 @@
         </div>
 
         <!-- VIA Macro Mode Toggle -->
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 0.5rem; padding: 6px 12px; background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border-tactical); font-size: 0.75rem; font-family: var(--font-mono);">
-          <span style="color: var(--text-dim);">VIA MACRO MODE:</span>
-          <div style="display: flex; gap: 14px;">
-            <label style="cursor: pointer; display: flex; align-items: center; gap: 4px; color: var(--text-bright);">
+        <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 0.5rem; padding: 8px 12px; background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border-tactical); font-size: 0.75rem; font-family: var(--font-mono);">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 4px;">
+            <span style="color: var(--text-dim);">MACRO INJECTION MODE:</span>
+            <span id="macroModeHint" style="color: var(--yellow-se); font-size: 0.7rem;">⚡ 1-TOUCH: Auto-presses Enter (Do NOT open chat first)</span>
+          </div>
+          <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+            <label style="cursor: pointer; display: flex; align-items: center; gap: 4px; color: var(--text-bright);" title="Opens chat, types payload, and transmits automatically">
               <input type="radio" name="macroExecMode" value="immediate" checked style="accent-color: var(--yellow-se);">
-              <span>Immediate Send</span>
+              <span>1-Touch Send</span>
             </label>
-            <label style="cursor: pointer; display: flex; align-items: center; gap: 4px; color: var(--text-bright);">
+            <label style="cursor: pointer; display: flex; align-items: center; gap: 4px; color: var(--text-bright);" title="Opens chat, types payload, and keeps chat prompt open for typing">
               <input type="radio" name="macroExecMode" value="draft" style="accent-color: var(--yellow-se);">
-              <span>Draft (Type Only)</span>
+              <span>1-Touch Draft</span>
+            </label>
+            <label style="cursor: pointer; display: flex; align-items: center; gap: 4px; color: var(--text-bright);" title="Types payload only. Use if you prefer pressing Enter manually first">
+              <input type="radio" name="macroExecMode" value="insert" style="accent-color: var(--yellow-se);">
+              <span>In-Chat Only (You Press Enter First)</span>
             </label>
           </div>
         </div>

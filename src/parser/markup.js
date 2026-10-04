@@ -267,11 +267,22 @@ export function generateAhkScript(rawText, options = {}) {
   const payload = minify ? minifyMarkup(rawText || '') : (rawText || '');
   const safePayload = payload.replace(/"/g, '""');
 
+  if (mode === 'insert') {
+    return `#Requires AutoHotkey v2.0
+#SingleInstance Force
+
+; Super Earth Terminal - Keystroke Macro (In-Chat Injection - You Press Enter First)
+${hotkey}:: {
+    SendEvent("${safePayload}")
+}
+`;
+  }
+
   if (mode === 'draft') {
     return `#Requires AutoHotkey v2.0
 #SingleInstance Force
 
-; Super Earth Terminal - Keystroke Macro (Draft Mode)
+; Super Earth Terminal - Keystroke Macro (Draft Mode - Auto-Opens Chat)
 ${hotkey}:: {
     SendEvent("{Enter}")
     Sleep ${openDelay}

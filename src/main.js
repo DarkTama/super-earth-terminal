@@ -75,6 +75,7 @@ const elements = {
   btnCopyViaMacro: document.getElementById('btnCopyViaMacro'),
   btnExportAhk: document.getElementById('btnExportAhk'),
   radioMacroModes: document.querySelectorAll('input[name="macroExecMode"]'),
+  macroModeHint: document.getElementById('macroModeHint'),
   btnAudioToggle: document.getElementById('btnAudioToggle'),
   audioIcon: document.getElementById('audioIcon'),
   audioLabel: document.getElementById('audioLabel'),
@@ -456,6 +457,15 @@ function setupEvents() {
       if (e.target.checked) {
         synth.playClick();
         state.macroExecMode = e.target.value;
+        if (elements.macroModeHint) {
+          if (e.target.value === 'immediate') {
+            elements.macroModeHint.textContent = '⚡ 1-TOUCH: Auto-presses Enter (Do NOT open chat first)';
+          } else if (e.target.value === 'draft') {
+            elements.macroModeHint.textContent = '✏️ 1-TOUCH: Auto-presses Enter & holds open (Do NOT open chat first)';
+          } else if (e.target.value === 'insert') {
+            elements.macroModeHint.textContent = '💬 IN-CHAT ONLY: Types payload only (Press Enter first)';
+          }
+        }
       }
     });
   });
