@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Super Earth Terminal // Helldivers 2 Super Formatting</title>
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <link rel="stylesheet" href="./src/styles/tactical.css">
+</head>
+<body>
+  <div class="terminal-container">
+    <!-- Header -->
+    <header class="terminal-header">
+      <div class="brand-wrapper">
+        <svg class="insignia-icon" viewBox="0 0 64 64" fill="none">
+          <rect width="64" height="64" rx="8" fill="#0D1117" stroke="#FFE800" stroke-width="2"/>
+          <path d="M32 12C20 12 16 20 16 28C16 34 20 38 22 40L22 46L26 46L26 44L30 44L30 46L34 46L34 44L38 44L38 46L42 46L42 40C44 38 48 34 48 28C48 20 44 12 32 12Z" fill="#FFE800"/>
+          <path d="M22 28L28 30L26 34L20 32Z" fill="#0D1117"/>
+          <path d="M42 28L36 30L38 34L44 32Z" fill="#0D1117"/>
+          <polygon points="32,16 34,22 40,22 35,26 37,32 32,28 27,32 29,26 24,22 30,22" fill="#0D1117"/>
+        </svg>
+        <div>
+          <h1 class="brand-title">Super Earth Terminal</h1>
+          <p class="brand-subtitle">Tactical Helldivers 2 Rich-Text Formatting Console</p>
+        </div>
+      </div>
+      <div class="header-controls">
+        <button id="btnAudioToggle" class="btn-tactical-icon" title="Toggle Tactical Audio Feedback">
+          <span id="audioIcon">🔊</span>
+          <span id="audioLabel">AUDIO: ON</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Mode Switcher Tabs -->
+    <div class="mode-switcher">
+      <button id="tabSteamName" class="mode-tab active" data-mode="steam">
+        <span>[ STEAM NAME ]</span>
+        <span class="mode-badge">32 CHAR LIMIT // DESTROYER CARD</span>
+      </button>
+      <button id="tabTacticalChat" class="mode-tab" data-mode="chat">
+        <span>[ TACTICAL CHAT ]</span>
+        <span class="mode-badge">100 CHAR LIMIT // IN-GAME HUD</span>
+      </button>
+    </div>
+
+    <!-- Active Safety Alert Banners -->
+    <div id="crashHazardBanner" class="alert-banner hazard" style="display: none;">
+      <span>⚠️</span>
+      <span id="crashHazardText">CRASH HAZARD DETECTED // ENGINE INSTABILITY RISK (&lt;f=04..99&gt; will crash Helldivers 2 client). Clipboard transmission locked.</span>
+    </div>
+
+    <div id="symbolWarningBanner" class="alert-banner warning" style="display: none;">
+      <span>⚠️</span>
+      <span>WARNING // FAT TAG (&lt;f=XX&gt;) ON SYMBOLS: Helldivers engine known to break glyph rendering when bolded.</span>
+    </div>
+
+    <!-- Main Grid -->
+    <main class="terminal-grid">
+      <!-- Left Column: Composer -->
+      <section class="panel-tactical">
+        <div class="panel-header">
+          <h2 class="panel-title">Tactical Command Buffer</h2>
+          <span id="targetModeLabel" class="mode-badge" style="color: var(--cyan-system); border: 1px solid var(--border-tactical);">TARGET: STEAM NAME</span>
+        </div>
+
+        <!-- Presets Bar -->
+        <div class="presets-section">
+          <div class="presets-label">Tactical Transmissions & Archetypes:</div>
+          <div id="presetsList" class="presets-scroll"></div>
+        </div>
+
+        <!-- Formatting Toolbar -->
+        <div class="toolbar-tactical">
+          <div class="toolbar-group">
+            <span class="advanced-label" style="font-size: 0.75rem;">COLOR:</span>
+            <input type="color" id="nativeColorPicker" value="#FFE800" style="width: 28px; height: 26px; border: none; background: none; cursor: pointer;">
+            <div id="quickSwatches" style="display: flex; gap: 4px;"></div>
+          </div>
+
+          <div class="toolbar-divider"></div>
+
+          <div class="toolbar-group">
+            <span class="advanced-label" style="font-size: 0.75rem;">SIZE:</span>
+            <button class="btn-tool" data-size="10" title="Size 10 (Tiny)">10</button>
+            <button class="btn-tool" data-size="20" title="Size 20 (Normal)">20</button>
+            <button class="btn-tool" data-size="30" title="Size 30 (Heroic)">30</button>
+            <button class="btn-tool" data-size="40" title="Size 40 (Large)">40</button>
+            <button class="btn-tool" data-size="90" title="Size 90 (Giant)">90</button>
+          </div>
+
+          <div class="toolbar-divider"></div>
+
+          <div class="toolbar-group">
+            <button id="btnBold" class="btn-tool" title="Bold / Fat Tag (<f=00>)"><b>B</b></button>
+          </div>
+        </div>
+
+        <!-- Symbol Tray -->
+        <div class="presets-label">Tactical Symbol Tray (1-Click Insertion):</div>
+        <div id="symbolTray" class="symbol-tray"></div>
+
+        <!-- Editor Textarea -->
+        <div class="editor-wrapper">
+          <textarea id="rawInput" class="editor-textarea" placeholder="Enter tactical text or select presets above..." spellcheck="false"></textarea>
+
+          <!-- Character Budget Gauge -->
+          <div class="budget-gauge">
+            <div class="budget-meta">
+              <span>BUFFER CAPACITY: <strong id="budgetCounter">0 / 32</strong></span>
+              <span id="budgetBreakdown">TAGS: 0B // PAYLOAD: 0B</span>
+            </div>
+            <div class="budget-bar-track">
+              <div id="budgetBar" class="budget-bar-fill"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Advanced Syntax Drawer -->
+        <details class="advanced-drawer">
+          <summary class="advanced-summary">⚙️ ADVANCED SYNTAX &amp; MINIFICATION CONTROLS</summary>
+          <div class="advanced-content">
+            <div class="advanced-row">
+              <span class="advanced-label">ALPHA OPACITY (&lt;c=AARRGGBB&gt;):</span>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <input type="range" id="alphaSlider" min="0" max="255" value="255" style="width: 140px; accent-color: var(--yellow-se);">
+                <span id="alphaValueDisplay" style="font-family: var(--font-mono); font-size: 0.8rem; min-width: 45px;">FF (100%)</span>
+              </div>
+            </div>
+
+            <div class="advanced-row">
+              <span class="advanced-label">TEMPLATE INDEX TAGS:</span>
+              <div style="display: flex; gap: 6px;">
+                <button class="btn-tool" id="btnIndex1" title="Template 1: Squad color / Yellow dispatch">&lt;i=1&gt; SQUAD/YELLOW</button>
+                <button class="btn-tool" id="btnIndex2" title="Template 2: Engine invisible">&lt;i=2&gt; GHOST</button>
+              </div>
+            </div>
+
+            <div class="advanced-row">
+              <span class="advanced-label">OPTIMIZE MARKUP:</span>
+              <label style="display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 0.8rem; cursor: pointer;">
+                <input type="checkbox" id="chkMinify" checked style="accent-color: var(--yellow-se);">
+                <span>Minify markup (Strip redundant tail tags)</span>
+              </label>
+            </div>
+          </div>
+        </details>
+
+        <!-- Transmit Action Button -->
+        <button id="btnTransmit" class="btn-transmit">
+          <span>⚡</span>
+          <span>TRANSMIT TO CLIPBOARD</span>
+        </button>
+      </section>
+
+      <!-- Right Column: Live Tactical Preview & Meme Generator -->
+      <section class="panel-tactical">
+        <div class="panel-header">
+          <h2 class="panel-title">Procedural Tactical HUD / Meme Studio</h2>
+          <span class="mode-badge" style="color: var(--green-ally);">CANVAS 2D ACTIVE</span>
+        </div>
+
+        <!-- Preview Controls -->
+        <div class="preview-controls">
+          <div class="preview-field">
+            <label class="preview-field-label">PREVIEW SIMULATION:</label>
+            <select id="selectPreviewMode" class="input-tactical">
+              <option value="destroyer">Super Destroyer Card</option>
+              <option value="chat">Tactical Chat Stream HUD</option>
+            </select>
+          </div>
+
+          <div class="preview-field">
+            <label class="preview-field-label">ATMOSPHERIC BACKDROP:</label>
+            <select id="selectBackdrop" class="input-tactical">
+              <option value="desert">Planetary Surface (Desert)</option>
+              <option value="tactical">Clean Tactical Glass</option>
+            </select>
+          </div>
+
+          <div class="preview-field">
+            <label class="preview-field-label">EXPORT ASPECT RATIO:</label>
+            <select id="selectAspectRatio" class="input-tactical">
+              <option value="16:9">16:9 Tactical Banner (1200x675)</option>
+              <option value="9:16">9:16 Mobile Reel (1080x1920)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="preview-controls" id="modeSpecificControls">
+          <!-- Populated dynamically based on preview mode -->
+          <div class="preview-field" id="fieldShipName">
+            <label class="preview-field-label">SHIP TITLE:</label>
+            <input type="text" id="inputShipName" class="input-tactical" value="SES PATRIOT OF FREEDOM">
+          </div>
+
+          <div class="preview-field" id="fieldRankTitle">
+            <label class="preview-field-label">MILITARY RANK:</label>
+            <input type="text" id="inputRankTitle" class="input-tactical" value="STAR MARSHAL">
+          </div>
+
+          <div class="preview-field" id="fieldSquadSlot" style="display: none;">
+            <label class="preview-field-label">SQUAD SLOT:</label>
+            <select id="selectSquadSlot" class="input-tactical">
+              <option value="b1">B1 (Host Orange)</option>
+              <option value="p2">P2 (Blue)</option>
+              <option value="j3">J3 (Pink)</option>
+              <option value="s4">S4 (Green)</option>
+            </select>
+          </div>
+
+          <div class="preview-field" id="fieldCallsign" style="display: none;">
+            <label class="preview-field-label">CALLSIGN HANDLE:</label>
+            <input type="text" id="inputCallsign" class="input-tactical" value="fishy_gaming__">
+          </div>
+        </div>
+
+        <div class="preview-field" style="margin-bottom: 1rem;">
+          <label class="preview-field-label">MEME TOP CAPTION (OPTIONAL):</label>
+          <input type="text" id="inputMemeCaption" class="input-tactical" placeholder="e.g. bro found heaven...">
+        </div>
+
+        <!-- Canvas -->
+        <div class="canvas-wrapper">
+          <canvas id="memeCanvas"></canvas>
+        </div>
+
+        <!-- Canvas Actions -->
+        <div class="canvas-actions">
+          <button id="btnCopyImage" class="btn-action-secondary">
+            <span>📋</span>
+            <span>COPY MEME IMAGE</span>
+          </button>
+          <button id="btnDownloadImage" class="btn-action-secondary">
+            <span>💾</span>
+            <span>DOWNLOAD PNG</span>
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <!-- Tactical Toast Notification -->
+    <div id="tacticalToast" class="toast-tactical">
+      <span class="toast-icon">⚡</span>
+      <span id="toastMessage">TRANSMISSION BUFFER LOADED // READY FOR IN-GAME CHAT</span>
+    </div>
+  </div>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

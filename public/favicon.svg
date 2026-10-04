@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <rect width="64" height="64" rx="12" fill="#0A0C10"/>
+  <path d="M8 8L16 8M48 8L56 8M8 56L16 56M48 56L56 56" stroke="#FFE800" stroke-width="2"/>
+  <!-- Tactical Skull / Insignia -->
+  <path d="M32 12C20 12 16 20 16 28C16 34 20 38 22 40L22 46L26 46L26 44L30 44L30 46L34 46L34 44L38 44L38 46L42 46L42 40C44 38 48 34 48 28C48 20 44 12 32 12Z" fill="#FFE800"/>
+  <!-- Eyes -->
+  <path d="M22 28L28 30L26 34L20 32Z" fill="#0A0C10"/>
+  <path d="M42 28L36 30L38 34L44 32Z" fill="#0A0C10"/>
+  <!-- Star -->
+  <polygon points="32,16 34,22 40,22 35,26 37,32 32,28 27,32 29,26 24,22 30,22" fill="#0A0C10"/>
+  <!-- Crosshairs -->
+  <circle cx="32" cy="32" r="28" stroke="#FFE800" stroke-width="1" stroke-dasharray="4 6" opacity="0.4"/>
+</svg>

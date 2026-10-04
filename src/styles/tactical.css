@@ -1,0 +1,668 @@
+/* ==========================================================================
+   Super Earth Terminal - Tactical Military Styling (Helldivers 2 Aesthetic)
+   ========================================================================== */
+
+:root {
+  --bg-space: #07090D;
+  --bg-terminal: #0D1117;
+  --bg-card: rgba(13, 17, 23, 0.95);
+  --border-tactical: rgba(255, 232, 0, 0.35);
+  --border-tactical-bright: #FFE800;
+  
+  --yellow-se: #FFE800;
+  --yellow-dim: rgba(255, 232, 0, 0.7);
+  --cyan-system: #7DF9FF;
+  --red-hazard: #FF0033;
+  --green-ally: #52FF3B;
+  
+  --squad-orange: #FF9900;
+  --squad-blue: #38B6FF;
+  --squad-pink: #FF66CC;
+  --squad-green: #52FF3B;
+
+  --font-mono: 'Consolas', 'Courier New', monospace;
+  --font-hud: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-display: 'Impact', 'Arial Black', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-space);
+  color: #E2E8F0;
+  font-family: var(--font-hud);
+  line-height: 1.5;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* CRT Screen Scanline Overlay */
+body::before {
+  content: " ";
+  display: block;
+  position: fixed;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+  background-size: 100% 4px;
+  z-index: 999;
+  pointer-events: none;
+  opacity: 0.65;
+}
+
+/* Tactical Background Grid */
+body::after {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-image: 
+    linear-gradient(rgba(255, 232, 0, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 232, 0, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.terminal-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1.5rem 1.5rem 4rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Tactical Header
+   -------------------------------------------------------------------------- */
+.terminal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid var(--border-tactical);
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.brand-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.insignia-icon {
+  width: 44px;
+  height: 44px;
+  filter: drop-shadow(0 0 8px rgba(255, 232, 0, 0.4));
+}
+
+.brand-title {
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: var(--yellow-se);
+  text-transform: uppercase;
+}
+
+.brand-subtitle {
+  font-size: 0.75rem;
+  color: var(--cyan-system);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-family: var(--font-mono);
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.btn-tactical-icon {
+  background: rgba(255, 232, 0, 0.1);
+  border: 1px solid var(--border-tactical);
+  color: var(--yellow-se);
+  padding: 0.5rem 0.8rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.2s ease;
+  clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+}
+
+.btn-tactical-icon:hover {
+  background: var(--yellow-se);
+  color: #000000;
+}
+
+/* --------------------------------------------------------------------------
+   Target Mode Switcher
+   -------------------------------------------------------------------------- */
+.mode-switcher {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.mode-tab {
+  flex: 1;
+  background: rgba(13, 17, 23, 0.8);
+  border: 1px solid var(--border-tactical);
+  color: var(--yellow-dim);
+  padding: 0.85rem 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  transition: all 0.2s ease;
+}
+
+.mode-tab:hover {
+  border-color: var(--yellow-se);
+  color: var(--yellow-se);
+  background: rgba(255, 232, 0, 0.08);
+}
+
+.mode-tab.active {
+  background: var(--yellow-se);
+  color: #000000;
+  border-color: var(--yellow-se);
+  box-shadow: 0 0 15px rgba(255, 232, 0, 0.4);
+}
+
+.mode-badge {
+  font-size: 0.75rem;
+  padding: 0.15rem 0.45rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 2px;
+}
+
+.mode-tab.active .mode-badge {
+  background: rgba(0, 0, 0, 0.8);
+  color: var(--yellow-se);
+}
+
+/* --------------------------------------------------------------------------
+   Tactical Warning Banners
+   -------------------------------------------------------------------------- */
+.alert-banner {
+  padding: 0.85rem 1.2rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+}
+
+.alert-banner.hazard {
+  background: rgba(255, 0, 51, 0.2);
+  border: 1px solid var(--red-hazard);
+  color: #FF8599;
+  animation: pulse-hazard 1.5s infinite alternate;
+}
+
+.alert-banner.warning {
+  background: rgba(255, 153, 0, 0.15);
+  border: 1px solid var(--squad-orange);
+  color: #FFB347;
+}
+
+@keyframes pulse-hazard {
+  from { box-shadow: 0 0 6px rgba(255, 0, 51, 0.3); }
+  to { box-shadow: 0 0 18px rgba(255, 0, 51, 0.7); }
+}
+
+/* --------------------------------------------------------------------------
+   Main Layout Grid
+   -------------------------------------------------------------------------- */
+.terminal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .terminal-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.panel-tactical {
+  background: var(--bg-card);
+  border: 1px solid var(--border-tactical);
+  padding: 1.25rem;
+  position: relative;
+  clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 232, 0, 0.2);
+  padding-bottom: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.panel-title {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--yellow-se);
+  text-transform: uppercase;
+}
+
+/* --------------------------------------------------------------------------
+   Presets Bar
+   -------------------------------------------------------------------------- */
+.presets-section {
+  margin-bottom: 1rem;
+}
+
+.presets-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--cyan-system);
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.1em;
+}
+
+.presets-scroll {
+  display: flex;
+  gap: 0.4rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.presets-scroll::-webkit-scrollbar {
+  height: 4px;
+}
+
+.presets-scroll::-webkit-scrollbar-thumb {
+  background: var(--border-tactical);
+}
+
+.btn-preset {
+  white-space: nowrap;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 232, 0, 0.25);
+  color: #CBD5E1;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  padding: 0.4rem 0.7rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-preset:hover {
+  background: rgba(255, 232, 0, 0.15);
+  border-color: var(--yellow-se);
+  color: var(--yellow-se);
+}
+
+/* --------------------------------------------------------------------------
+   Formatting Toolbar
+   -------------------------------------------------------------------------- */
+.toolbar-tactical {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 232, 0, 0.2);
+  padding: 0.6rem;
+  margin-bottom: 0.8rem;
+}
+
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 24px;
+  background: rgba(255, 232, 0, 0.2);
+  margin: 0 0.3rem;
+}
+
+.btn-tool {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 232, 0, 0.3);
+  color: #FFFFFF;
+  padding: 0.35rem 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-tool:hover {
+  background: var(--yellow-se);
+  color: #000000;
+}
+
+.color-swatch-btn {
+  width: 24px;
+  height: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+.color-swatch-btn:hover {
+  transform: scale(1.15);
+  border-color: #FFFFFF;
+}
+
+/* Symbol Tray */
+.symbol-tray {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  padding: 0.5rem;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px dashed rgba(255, 232, 0, 0.2);
+  margin-bottom: 0.8rem;
+}
+
+.btn-symbol {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--yellow-se);
+  font-size: 1rem;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-symbol:hover {
+  background: var(--yellow-se);
+  color: #000000;
+  transform: scale(1.1);
+}
+
+/* --------------------------------------------------------------------------
+   Editor Textarea & Budget Gauge
+   -------------------------------------------------------------------------- */
+.editor-wrapper {
+  margin-bottom: 1rem;
+}
+
+.editor-textarea {
+  width: 100%;
+  height: 120px;
+  background: #06080B;
+  border: 1.5px solid var(--border-tactical);
+  color: #FFFFFF;
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  padding: 0.85rem;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.editor-textarea:focus {
+  border-color: var(--yellow-se);
+  box-shadow: 0 0 8px rgba(255, 232, 0, 0.3);
+}
+
+.budget-gauge {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 232, 0, 0.2);
+  padding: 0.6rem 0.8rem;
+  margin-top: 0.5rem;
+}
+
+.budget-meta {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  margin-bottom: 0.35rem;
+}
+
+.budget-bar-track {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.budget-bar-fill {
+  height: 100%;
+  background: var(--green-ally);
+  width: 0%;
+  transition: width 0.2s ease, background-color 0.2s ease;
+}
+
+.budget-bar-fill.warning {
+  background: var(--squad-orange);
+}
+
+.budget-bar-fill.hazard {
+  background: var(--red-hazard);
+  animation: pulse-hazard 1s infinite alternate;
+}
+
+/* --------------------------------------------------------------------------
+   Advanced Syntax Drawer
+   -------------------------------------------------------------------------- */
+.advanced-drawer {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 232, 0, 0.15);
+  padding: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.advanced-summary {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--cyan-system);
+  cursor: pointer;
+  user-select: none;
+}
+
+.advanced-content {
+  padding-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.advanced-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.advanced-label {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: #CBD5E1;
+}
+
+/* --------------------------------------------------------------------------
+   Transmit Button
+   -------------------------------------------------------------------------- */
+.btn-transmit {
+  width: 100%;
+  background: var(--yellow-se);
+  color: #000000;
+  border: none;
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  padding: 1rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+  transition: all 0.2s ease;
+}
+
+.btn-transmit:hover:not(:disabled) {
+  background: #FFFFFF;
+  box-shadow: 0 0 20px rgba(255, 232, 0, 0.6);
+  transform: translateY(-1px);
+}
+
+.btn-transmit:disabled {
+  background: #333333;
+  color: #777777;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* --------------------------------------------------------------------------
+   Preview & Canvas Column
+   -------------------------------------------------------------------------- */
+.preview-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.preview-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+  min-width: 140px;
+}
+
+.preview-field-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--cyan-system);
+  text-transform: uppercase;
+}
+
+.input-tactical {
+  background: #06080B;
+  border: 1px solid var(--border-tactical);
+  color: #FFFFFF;
+  font-family: var(--font-hud);
+  font-size: 0.85rem;
+  padding: 0.45rem 0.6rem;
+  outline: none;
+}
+
+.input-tactical:focus {
+  border-color: var(--yellow-se);
+}
+
+.canvas-wrapper {
+  background: #000000;
+  border: 1.5px solid var(--border-tactical);
+  margin-bottom: 1rem;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#memeCanvas {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.canvas-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.btn-action-secondary {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-tactical);
+  color: var(--yellow-se);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.75rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+}
+
+.btn-action-secondary:hover {
+  background: var(--yellow-se);
+  color: #000000;
+}
+
+/* --------------------------------------------------------------------------
+   Tactical Toast Notification
+   -------------------------------------------------------------------------- */
+.toast-tactical {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: #0D1117;
+  border: 1.5px solid var(--yellow-se);
+  color: #FFFFFF;
+  padding: 0.9rem 1.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: 0 0 25px rgba(255, 232, 0, 0.45);
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  z-index: 1000;
+  transform: translateY(120%);
+  opacity: 0;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+}
+
+.toast-tactical.visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.toast-icon {
+  color: var(--yellow-se);
+}
