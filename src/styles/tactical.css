@@ -68,7 +68,7 @@ body::after {
 }
 
 .terminal-container {
-  max-width: 1400px;
+  max-width: 1560px;
   margin: 0 auto;
   padding: 1.5rem 1.5rem 4rem;
   position: relative;
@@ -235,7 +235,7 @@ body::after {
    -------------------------------------------------------------------------- */
 .terminal-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 1.5rem;
   align-items: start;
 }
@@ -251,6 +251,8 @@ body::after {
   border: 1px solid var(--border-tactical);
   padding: 1.25rem;
   position: relative;
+  min-width: 0;
+  max-width: 100%;
   clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
 }
 
@@ -277,8 +279,9 @@ body::after {
    -------------------------------------------------------------------------- */
 .presets-section {
   margin-bottom: 1rem;
+  min-width: 0;
+  max-width: 100%;
 }
-
 .presets-label {
   font-family: var(--font-mono);
   font-size: 0.75rem;
@@ -292,6 +295,8 @@ body::after {
   display: flex;
   gap: 0.4rem;
   overflow-x: auto;
+  max-width: 100%;
+  min-width: 0;
   padding-bottom: 0.5rem;
 }
 
@@ -332,8 +337,9 @@ body::after {
   border: 1px solid rgba(255, 232, 0, 0.2);
   padding: 0.6rem;
   margin-bottom: 0.8rem;
+  min-width: 0;
+  max-width: 100%;
 }
-
 .toolbar-group {
   display: flex;
   align-items: center;
@@ -386,8 +392,9 @@ body::after {
   background: rgba(0, 0, 0, 0.3);
   border: 1px dashed rgba(255, 232, 0, 0.2);
   margin-bottom: 0.8rem;
+  min-width: 0;
+  max-width: 100%;
 }
-
 .btn-symbol {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.15);
