@@ -21,13 +21,15 @@ Furthermore:
 
 ## Decision
 1. **Dual Target Modes**: Provide distinct tabs:
-   - `Steam Name Mode`: 32-character budget, nameplate card preview.
+   - `Steam Name Mode`: 32-character budget, nameplate card preview. *(Note: Deprecated for live in-game rendering due to Arrowhead name sanitizer patch; retained for canvas meme/card export).*
    - `Tactical Chat Mode`: 100-character budget, chat stream HUD preview.
 2. **Minified Markup by Default**: Automatically omit trailing closing tags when styles extend to string end. Provide a toggle for strict explicit closing tags.
 3. **Crash Hazard Intercept**: Implement an active validation guard in the parser. Any tag matching `<f=(0[4-9]|[1-9][0-9])>` triggers a critical UI warning banner and locks clipboard copy operations until rectified.
 4. **Tactical Symbol Tray**: Provide verified working ASCII/Unicode symbols (★, ☆, ♥, ☠︎, ☯︎, Ω︎, ☀︎, ☁︎, ☂︎, ❄︎, ☢︎, ☣︎, ✌︎). Automatically warn if bold formatting wraps a symbol to prevent client rendering glitches.
+5. **VIA / Hardware Keystroke Macro Generation (Planned)**: Because the Stingray engine blocks clipboard `Ctrl+V` inside chat, support generating raw VIA macro strings (`{KC_ENT}{100}[PAYLOAD]{50}{KC_ENT}`) for 1-click export to QMK/VIA hardware keyboards (NuPhy, Keychron, etc.).
 
 ## Consequences
 - Protects users from inadvertent game crashes.
 - Maximizes usable name length within Steam's strict 32-character limit.
 - Clean separation between player identity styling and in-game tactical broadcasting.
+- Documents live engine reality: Steam name color tags masked to asterisks `*`; in-game chat requires keystroke injection.

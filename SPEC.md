@@ -10,14 +10,16 @@
 
 ## 2. Target Modes
 
-### 2.1 Steam Profile Name Mode (`[ STEAM NAME ]`)
+### 2.1 Steam Profile Name Mode (`[ STEAM NAME ]`) [DEPRECATED IN-GAME]
+> ⚠️ **ENGINE NOTICE:** Arrowhead has patched rich-text tags in Steam profile names. The game client sanitizes `<...>` tags and masks every character 1:1 with asterisks `*`. This mode is retained exclusively for procedural Helldivers 2 Nameplate card generation, Discord avatars, and meme export.
+
 - **Target Constraint:** 32 characters maximum (Steam profile name ceiling).
-- **Default Visual Preview:** Super Destroyer Player Card:
-  - Super Earth golden skull emblem.
-  - Ship title (e.g. `SES PATRIOT OF FREEDOM`).
-  - Rank title & insignia (e.g. `STAR MARSHAL` / `CADET`).
+- **Default Visual Preview:** Super Destroyer Nameplate Card:
+  - Super Earth rank insignia shield.
+  - Squad leader vertical bar.
+  - Military title & level (e.g. `CADET`, Level `105`).
+  - EXP progress bar.
   - Active formatted callsign with in-game glow.
-- **Curated Name Presets:**
   - `General Brasch<c=ffffe900>★` (Gold star general)
   - `<c=ffffe900><s=30>John Helldiver` (Oversized heroic font)
   - `☯︎White<c=ff000000>Black☯︎` (Yin yang dual tone)
@@ -103,3 +105,12 @@
 - Tactical yellow "TRANSMIT TO CLIPBOARD" button.
 - Native `navigator.clipboard` with fallback.
 - Audio chirp and animated Super Earth HUD toast.
+
+### 3.9 VIA & Hardware Keystroke Macro Generator (Planned)
+- Because Helldivers 2 chat engine does not handle OS clipboard `Ctrl+V`, formatted strings cannot be pasted directly into in-game chat.
+- The terminal will feature a dedicated **"COPY VIA MACRO"** action button.
+- Converts formatted buffer into standard VIA macro format:
+  ```text
+  {KC_ENT}{100}[PAYLOAD]{50}{KC_ENT}
+  ```
+- Supports 1-click clipboard copy of the macro syntax for instant pasting into VIA (`usevia.app`), compatible with NuPhy, Keychron, and QMK hardware keyboards.

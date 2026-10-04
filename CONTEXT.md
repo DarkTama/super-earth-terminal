@@ -5,9 +5,8 @@ The client-side web application providing tactical chat text formatting, Steam n
 
 ### Target Mode
 The operational context defining character budget and visual rendering target:
-- **Steam Name Mode**: Enforces Steam profile name 32-character ceiling; renders player lobby nameplate and ship HUD badge.
-- **Tactical Chat Mode**: Enforces in-game chat engine 100-character ceiling; renders in-game tactical chat stream box.
-
+- **Steam Name Mode**: Enforces Steam profile name 32-character ceiling; renders player lobby nameplate and ship HUD badge. *(Deprecated for in-game identity due to Arrowhead tag sanitization; active for canvas meme/nameplate export).*
+- **Tactical Chat Mode**: Enforces in-game chat engine 100-character ceiling; renders in-game tactical chat stream box. Active for live game chat macros.
 ### Super Destroyer Player Card
 Visual tactical simulation reproducing the Helldivers 2 ship bridge / lobby player card displaying Super Earth insignia, ship name banner (e.g. `SES PATRIOT OF FREEDOM`), military rank badge (e.g. `STAR MARSHAL`), and styled callsign.
 ### Callsign Handle
@@ -52,3 +51,9 @@ A PNG raster export of the HUD Preview Canvas or Super Destroyer Player Card gen
 
 ### Audio Synthesizer
 A zero-asset Web Audio API oscillator module generating procedural terminal feedback, Stratagem confirmation tones, hazard sirens, and transmission bursts.
+
+### Steam Name Sanitization (Engine Patch)
+Arrowhead server/client update that intercepts `<...>` markup tags in Steam profile names and replaces every character 1:1 with asterisks `*`, completely disabling rich-text Steam names in-game.
+
+### VIA Keystroke Macro
+Hardware macro string formatted as `{KC_ENT}{100}[PAYLOAD]{50}{KC_ENT}` designed for QMK/VIA programmable keyboards (e.g. NuPhy Air75 V2). Bypasses the in-game chat prompt's `Ctrl+V` block by typing raw USB HID scan codes directly into the chat prompt with automated open/send delays.
