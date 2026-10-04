@@ -1,70 +1,105 @@
-# Specification: Super Earth Terminal (Helldivers 2 Chat Color Formatter)
+# Specification: Super Earth Terminal (Helldivers 2 Super Formatting Engine)
 
 ## 1. Project Overview
 - **Name:** Super Earth Terminal
-- **Objective:** Tactical web application for Helldivers 2 players to compose, preview, and copy rich-text color formatted chat strings (`<c=AARRGGBB>`) for in-game chat, and export in-game HUD meme screenshots for social sharing.
-- **Visual Style:** Authentic Helldivers 2 Super Earth military aesthetic inspired by [Helldivers Companion](https://helldiverscompanion.com/) (deep gunmetal background, Helldivers yellow `#FFE800` accents, CRT scanlines, chamfered tactical HUD frames, monospace & sci-fi typography).
+- **Objective:** Tactical web application for Helldivers 2 players to compose, preview, validate, and copy rich-text markup tags for Steam profile names and in-game tactical chat, with crash safety validation and meme snapshot generation.
+- **Visual Style:** Authentic Helldivers 2 Super Earth military aesthetic inspired by [Helldivers Companion](https://helldiverscompanion.com/) (deep gunmetal background `#0A0C10`, Helldivers yellow `#FFE800` accents, CRT scanlines, chamfered tactical HUD frames, monospace & sci-fi typography).
 - **Target Platform:** Free GitHub Pages static deployment via Vite pipeline matching the user's `BagiAdil` repo architecture.
 
 ---
 
-## 2. Core Functional Requirements
+## 2. Target Modes
 
-### 2.1 In-Game Markup Engine
-- Outputs stingray-compliant inline color tags: `<c=AARRGGBB>[Payload]`.
-- Enforces leading `FF` alpha channel (e.g. standard hex `#7DF9FF` produces `<c=FF7DF9FF>`).
-- Final output string format: `<c=AARRGGBB>[UserText]`.
+### 2.1 Steam Profile Name Mode (`[ STEAM NAME ]`)
+- **Target Constraint:** 32 characters maximum (Steam profile name ceiling).
+- **Default Visual Preview:** Super Destroyer Player Card:
+  - Super Earth golden skull emblem.
+  - Ship title (e.g. `SES PATRIOT OF FREEDOM`).
+  - Rank title & insignia (e.g. `STAR MARSHAL` / `CADET`).
+  - Active formatted callsign with in-game glow.
+- **Curated Name Presets:**
+  - `General Brasch<c=ffffe900>★` (Gold star general)
+  - `<c=ffffe900><s=30>John Helldiver` (Oversized heroic font)
+  - `☯︎White<c=ff000000>Black☯︎` (Yin yang dual tone)
+  - `<c=74000000>👤<f=00>Anonymous` (Ghost transparency)
+  - `<c=ff0096ff>Blue<c=ffff0000>Red` (Dual split squad color)
+  - `<c=ffff006f><s=90>×͜×` (Giant custom emote)
+  - `<c=ff00ff11><s=90>🐲=============` (Giant dragon banner)
 
-### 2.2 Presets & Meme Library
-- **Official System Presets:**
-  - *Discovery Cyan* (`#7DF9FF`): `discovered Minor Place of Interest`, `discovered SEAF ARTILLERY`, `discovered Super Uranium`.
-  - *Warning Hazard Red* (`#FF0000`): `Warning: 380mm Orbital Barrage`, `Warning: Traitor Detected`.
-  - *Objective Yellow* (`#FFFF00`): `Objective: Terminal Uplink Completed`, `Objective: Super Earth Needs You`.
-  - *Ally Green* (`#00FF00`): `Squad: Reinforcements Deployed`, `Squad: Supply Drop Ready`.
-- **Meme Preset Library:**
-  - `discovered goth mommy's and tomboys` (screenshot meme)
-  - `discovered a fresh cup of Liber-tea`
-  - `discovered Automaton Propaganda`
-  - `discovered Democracy Officer tracking your location`
-- **Custom Preset Manager:**
-  - User can save custom color + text presets to browser `localStorage`.
-  - User can delete custom saved presets.
+### 2.2 Tactical Chat Mode (`[ TACTICAL CHAT ]`)
+- **Target Constraint:** 100 characters maximum (Helldivers 2 chat engine buffer ceiling).
+- **Default Visual Preview:** Tactical in-game HUD chat feed:
+  - 2 prior system announcements.
+  - Squad slot callsign badge (B1 Orange, P2 Blue, J3 Pink, S4 Green).
+  - Active formatted message line.
+  - Scroll indicator thumb & `[OPEN CHAT]` pill.
+- **Curated Chat Presets:**
+  - `discovered Minor Place of Interest` (`#7DF9FF`)
+  - `Warning: 380mm Orbital Barrage` (`#FF0033`)
+  - `discovered goth mommy's and tomboys` (Meme)
+  - `discovered a fresh cup of Liber-tea` (Meme)
+  - `discovered Automaton Propaganda` (Meme)
 
-### 2.3 Live In-Game HUD Preview
-- Translucent tactical HUD chat box reproducing in-game chat:
-  - 2 simulated genuine system announcements above.
-  - Active player line with callsign handle (`<squad_slot> <username>:`).
-  - Configurable squad slot: B1 (Orange `#FF9900`), P2 (Blue `#38B6FF`), J3 (Pink `#FF66CC`), S4 (Green `#52FF3B`).
-  - Editable player callsign handle (default `fishy_gaming__`).
-  - Scroll indicator thumb on right.
-  - Tactical `[OPEN CHAT]` pill at bottom.
-- **Backdrop Switcher:**
-  - Planetary Surface: Desert dune drop terrain inspired by reference screenshot.
-  - Tactical Glass: Clean dark HUD backdrop.
+---
 
-### 2.4 Character Budget Enforcer
-- Real-time length tracker against Helldivers 2 100-character chat limit.
-- Color tag consumes 12 characters (`<c=AARRGGBB>`), leaving 88 characters for payload.
-- Visual warning indicator (green -> amber -> flashing red) when budget is exceeded.
+## 3. Core Functional Requirements
 
-### 2.5 Meme Snapshot Export (Canvas PNG)
-- Dedicated HTML5 `<canvas>` rendering pipeline.
-- Optional top meme caption text (e.g. `"bro found heaven"`).
-- Dual aspect ratios:
-  - *Compact HUD*: 1200x675 (16:9 banner) focusing on the chat box.
-  - *Mobile Story/Reel*: 1080x1920 (9:16 vertical) matching TikTok / mobile screenshot format.
-- Actions:
-  - Download PNG image.
-  - Copy Image to clipboard (`navigator.clipboard.write([new ClipboardItem(...)])`).
+### 3.1 Interaction Model: Selection & Insertion Toolbar
+- **Interactive Formatting Toolbar:**
+  - Works on active textarea selection or inserts tag at caret.
+  - Color Picker button: wraps selection in `<c=AARRGGBB>...</c>` (or injects tag).
+  - Size Selector buttons: injects `<s=XX>` (10 Tiny, 20 Normal, 30 Medium, 40 Large, 90 Giant).
+  - Bold / Fat toggle: wraps selection in `<f=00>...</f>`.
+- **Direct Raw Text Editing:**
+  - Real-time two-way synchronization between raw textarea, character budget meter, and live preview canvases.
 
-### 2.6 Zero-Asset Tactical Web Audio Synthesizer
-- Built-in Web Audio API synthesis:
-  - Key click / UI selection chirp.
-  - Stratagem confirmation tone.
-  - Radio transmission buzz on copy.
-- Mute toggle switch with `localStorage` persistence.
+### 3.2 Advanced Syntax Drawer
+- Collapsible drawer for advanced parameters:
+  - **Alpha Opacity Slider:** 0% (`00`) to 100% (`FF`), default `100%`.
+  - **Template Index Tags:** `<i=1>` (Squad color / dispatch yellow), `<i=2>` (Hidden).
+  - **Minify Markup Toggle:** Checkbox `[x] Minify Markup (Omit redundant closing tags)` enabled by default.
 
-### 2.7 1-Click Clipboard Copy & Toast Feedback
-- Prominent tactical yellow "TRANSMIT TO CLIPBOARD" button.
-- Instant fallback copy (`navigator.clipboard` with `execCommand` fallback).
-- Animated tactical toast notification: `"TRANSMISSION BUFFER LOADED // READY FOR IN-GAME CHAT"`.
+### 3.3 Crash Hazard Guard (Engine Safety Intercept)
+- Helldivers 2 client crashes instantly if `<f=04>` through `<f=99>` is received.
+- Real-time syntax analyzer scans input string.
+- If pattern matching `/<f=(0[4-9]|[1-9][0-9])>/i` is detected:
+  - Trigger audio hazard siren.
+  - Display flashing red tactical alert banner: `⚠️ CRASH HAZARD DETECTED // ENGINE INSTABILITY RISK (<f=XX> will crash game)`.
+  - Lock "TRANSMIT TO CLIPBOARD" button until hazard is resolved.
+
+### 3.4 Tactical Symbol Tray
+- Quick 1-click glyph injection:
+  - Stars: `★`, `☆`
+  - Helldivers emblems: `☠︎`, `☢︎`, `☣︎`
+  - Decorative: `♥`, `☯︎`, `Ω︎`, `☀︎`, `☁︎`, `☂︎`, `❄︎`, `✌︎`
+- Glyphs insert directly at current cursor position.
+- Symbol compatibility warning triggers if `<f=XX>` tag wraps a symbol (engine known to break Unicode glyph rendering when bolded).
+
+### 3.5 Character Budget Gauge
+- Dynamic capacity meter switching by active mode:
+  - 32 units in Steam Name Mode.
+  - 100 units in Tactical Chat Mode.
+- Live character counter with tag vs text byte breakdown.
+- Color-coded meter bar: Green (0–75%), Yellow/Amber (76–99%), Red (>100%).
+
+### 3.6 Live Previews & Canvas Meme Exporter
+- **Live HTML/CSS Preview:**
+  - Mode toggle between Super Destroyer Player Card and Tactical In-Game Chat HUD.
+  - Renders all active tags (`<c>`, `<s>`, `<f>`, `<i>`).
+- **HTML5 Canvas 2D PNG Exporter:**
+  - Multi-aspect ratio export: 16:9 Tactical Banner (1200x675) and 9:16 Mobile Reel (1080x1920).
+  - Optional meme top caption (e.g. `"bro found heaven"`).
+  - 1-click Download PNG and 1-click Copy Image to Clipboard.
+
+### 3.7 Zero-Asset Procedural Web Audio Synthesizer
+- Built-in Web Audio API sound synthesis:
+  - Key click / keypad tap.
+  - Stratagem confirmation chime.
+  - Transmission burst sound on clipboard copy.
+  - Dual-tone hazard warning buzzer on crash tag detection.
+- Mute toggle with `localStorage` persistence.
+
+### 3.8 Clipboard Bridge & Tactical Notifications
+- Tactical yellow "TRANSMIT TO CLIPBOARD" button.
+- Native `navigator.clipboard` with fallback.
+- Audio chirp and animated Super Earth HUD toast.
