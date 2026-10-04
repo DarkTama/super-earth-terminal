@@ -251,7 +251,7 @@ function renderCurrentCanvas() {
   const rawMarkup = elements.rawInput.value;
 
   if (state.previewMode === 'nameplate' || state.previewMode === 'destroyer') {
-    const parts = state.playerXP.split('/');
+    const parts = state.playerXP ? state.playerXP.split('/') : [];
     const curXP = parts[0] ? parts[0].trim() : '3,252';
     const maxXP = parts[1] ? parts[1].trim() : '11,000';
     renderDestroyerCard(elements.memeCanvas, {
@@ -265,6 +265,7 @@ function renderCurrentCanvas() {
       backdrop: state.backdrop,
       aspectRatio: state.aspectRatio
     });
+  } else {
     renderTacticalChat(elements.memeCanvas, {
       rawMarkup,
       callsign: state.callsign,
