@@ -287,9 +287,10 @@ function setTargetMode(mode) {
     elements.tabSteamName.classList.add('active');
     elements.tabTacticalChat.classList.remove('active');
     elements.targetModeLabel.textContent = 'TARGET: STEAM NAME';
-    state.previewMode = 'destroyer';
     state.previewMode = 'nameplate';
     elements.selectPreviewMode.value = 'nameplate';
+  } else {
+    elements.tabTacticalChat.classList.add('active');
     elements.tabSteamName.classList.remove('active');
     elements.targetModeLabel.textContent = 'TARGET: TACTICAL CHAT';
     state.previewMode = 'chat';
