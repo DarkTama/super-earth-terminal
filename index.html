@@ -36,7 +36,7 @@
     <div class="mode-switcher">
       <button id="tabSteamName" class="mode-tab active" data-mode="steam">
         <span>[ STEAM NAME ]</span>
-        <span class="mode-badge">32 CHAR LIMIT // DESTROYER CARD</span>
+        <span class="mode-badge">32 CHAR LIMIT // NAMEPLATE CARD</span>
       </button>
       <button id="tabTacticalChat" class="mode-tab" data-mode="chat">
         <span>[ TACTICAL CHAT ]</span>
@@ -165,7 +165,7 @@
           <div class="preview-field">
             <label class="preview-field-label">PREVIEW SIMULATION:</label>
             <select id="selectPreviewMode" class="input-tactical">
-              <option value="destroyer">Super Destroyer Card</option>
+              <option value="nameplate">In-Game Nameplate Card</option>
               <option value="chat">Tactical Chat Stream HUD</option>
             </select>
           </div>
@@ -189,16 +189,20 @@
 
         <div class="preview-controls" id="modeSpecificControls">
           <!-- Populated dynamically based on preview mode -->
-          <div class="preview-field" id="fieldShipName">
-            <label class="preview-field-label">SHIP TITLE:</label>
-            <input type="text" id="inputShipName" class="input-tactical" value="SES PATRIOT OF FREEDOM">
+          <div class="preview-field" id="fieldPlayerTitle">
+            <label class="preview-field-label">TITLE:</label>
+            <input type="text" id="inputPlayerTitle" class="input-tactical" value="CADET">
           </div>
 
-          <div class="preview-field" id="fieldRankTitle">
-            <label class="preview-field-label">MILITARY RANK:</label>
-            <input type="text" id="inputRankTitle" class="input-tactical" value="STAR MARSHAL">
+          <div class="preview-field" id="fieldPlayerLevel">
+            <label class="preview-field-label">LEVEL:</label>
+            <input type="text" id="inputPlayerLevel" class="input-tactical" value="105">
           </div>
 
+          <div class="preview-field" id="fieldPlayerXP">
+            <label class="preview-field-label">EXP PROGRESS:</label>
+            <input type="text" id="inputPlayerXP" class="input-tactical" value="3,252 / 11,000">
+          </div>
           <div class="preview-field" id="fieldSquadSlot" style="display: none;">
             <label class="preview-field-label">SQUAD POSITION:</label>
             <select id="selectSquadSlot" class="input-tactical">

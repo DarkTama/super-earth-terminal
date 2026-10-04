@@ -113,42 +113,41 @@ function drawMemeCaption(ctx, width, caption) {
 }
 
 /**
- * Procedural Super Earth Golden Insignia
+ * Procedural Helldivers 2 Rank Shield Emblem
  */
-function drawSuperEarthEmblem(ctx, cx, cy, size = 48) {
+function drawRankShield(ctx, x, y, width = 44, height = 58) {
   ctx.save();
-  ctx.translate(cx, cy);
+  ctx.translate(x, y);
 
-  // Outer ring
-  ctx.strokeStyle = '#FFE800';
-  ctx.lineWidth = 3;
+  // Outer shield shape with pointed base
   ctx.beginPath();
-  ctx.arc(0, 0, size * 0.85, 0, Math.PI * 2);
+  ctx.moveTo(0, 0);
+  ctx.lineTo(width, 0);
+  ctx.lineTo(width, height * 0.62);
+  ctx.lineTo(width / 2, height);
+  ctx.lineTo(0, height * 0.62);
+  ctx.closePath();
+
+  // Metallic grey gradient fill
+  const grad = ctx.createLinearGradient(0, 0, width, height);
+  grad.addColorStop(0, '#5C6778');
+  grad.addColorStop(0.5, '#414B58');
+  grad.addColorStop(1, '#2E3540');
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Metallic outer rim
+  ctx.strokeStyle = '#8B97A6';
+  ctx.lineWidth = 2.5;
   ctx.stroke();
 
-  // Wings
-  ctx.fillStyle = '#FFE800';
+  // Subtle vertical division line
   ctx.beginPath();
-  ctx.moveTo(0, -size * 0.6);
-  ctx.lineTo(size * 0.8, -size * 0.2);
-  ctx.lineTo(size * 0.5, size * 0.2);
-  ctx.lineTo(0, size * 0.05);
-  ctx.lineTo(-size * 0.5, size * 0.2);
-  ctx.lineTo(-size * 0.8, -size * 0.2);
-  ctx.closePath();
-  ctx.fill();
-
-  // Skull cutout
-  ctx.fillStyle = '#0A0C10';
-  ctx.beginPath();
-  ctx.arc(0, -size * 0.15, size * 0.25, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillRect(-size * 0.15, -size * 0.15, size * 0.3, size * 0.4);
-
-  // Skull eyes
-  ctx.fillStyle = '#FFE800';
-  ctx.fillRect(-size * 0.1, -size * 0.18, size * 0.07, size * 0.07);
-  ctx.fillRect(size * 0.03, -size * 0.18, size * 0.07, size * 0.07);
+  ctx.moveTo(width / 2, 3);
+  ctx.lineTo(width / 2, height - 5);
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.16)';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
 
   ctx.restore();
 }
@@ -274,13 +273,16 @@ export function renderTacticalChat(canvas, options = {}) {
 }
 
 /**
- * Renders Helldivers 2 Super Destroyer / Lobby Player Card
+ * Renders Helldivers 2 In-Game Nameplate Card (matching Steam Guide)
  */
-export function renderDestroyerCard(canvas, options = {}) {
+export function renderNameplateCard(canvas, options = {}) {
   const {
     rawMarkup = 'General Brasch<c=ffffe900>★',
-    shipName = 'SES PATRIOT OF FREEDOM',
-    rankTitle = 'STAR MARSHAL',
+    title = 'CADET',
+    level = '105',
+    xpCurrent = '3,252',
+    xpMax = '11,000',
+    squadColor = '#FF9900',
     memeCaption = '',
     backdrop = 'desert',
     aspectRatio = '16:9'
@@ -297,53 +299,45 @@ export function renderDestroyerCard(canvas, options = {}) {
   // 2. Meme top caption
   drawMemeCaption(ctx, dims.width, memeCaption);
 
-  // 3. Destroyer Card dimensions
+  // 3. Nameplate dimensions
   const isBanner = aspectRatio === '16:9';
-  const cardWidth = isBanner ? dims.width * 0.65 : dims.width * 0.88;
-  const cardHeight = isBanner ? dims.height * 0.42 : dims.height * 0.28;
+  const cardWidth = isBanner ? 660 : dims.width * 0.9;
+  const cardHeight = isBanner ? 210 : 250;
   const cardX = (dims.width - cardWidth) / 2;
-  const cardY = isBanner ? dims.height * 0.38 : dims.height * 0.45;
+  const cardY = isBanner ? dims.height * 0.4 : dims.height * 0.44;
 
   ctx.save();
-  // Card base
-  ctx.fillStyle = 'rgba(10, 14, 20, 0.92)';
+  // Card base (Helldivers authentic slate-navy backing)
+  ctx.fillStyle = 'rgba(17, 24, 34, 0.94)';
   ctx.fillRect(cardX, cardY, cardWidth, cardHeight);
 
-  // Tactical border
-  ctx.strokeStyle = '#FFE800';
-  ctx.lineWidth = 2;
+  // Subtle border
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+  ctx.lineWidth = 1.5;
   ctx.strokeRect(cardX, cardY, cardWidth, cardHeight);
 
-  // Top header stripe with Super Earth Yellow
-  ctx.fillStyle = '#FFE800';
-  ctx.fillRect(cardX, cardY, cardWidth, 6);
+  // Shield Rank Emblem
+  const shieldW = 44;
+  const shieldH = 58;
+  const shieldX = cardX + 32;
+  const shieldY = cardY + (cardHeight - shieldH) / 2 - 4;
+  drawRankShield(ctx, shieldX, shieldY, shieldW, shieldH);
 
-  // Draw Super Earth Emblem on left
-  const emblemSize = isBanner ? 44 : 52;
-  const emblemX = cardX + emblemSize + 28;
-  const emblemY = cardY + cardHeight / 2;
-  drawSuperEarthEmblem(ctx, emblemX, emblemY, emblemSize);
+  // Orange Squad Leader vertical bar
+  const barX = shieldX + shieldW + 20;
+  const barY = cardY + 32;
+  const barH = cardHeight - 64;
+  ctx.fillStyle = squadColor || '#FF9900';
+  ctx.fillRect(barX, barY, 4, barH);
 
-  // Text Content Left Offset
-  const contentX = emblemX + emblemSize + 24;
-  let textY = cardY + (isBanner ? 48 : 56);
-  const baseFontSize = isBanner ? 20 : 24;
+  // Content Area
+  const contentX = barX + 18;
+  const progressWidth = isBanner ? 440 : cardWidth - (contentX - cardX) - 36;
 
-  // Ship Title (SES PATRIOT OF FREEDOM)
-  ctx.font = `bold ${baseFontSize - 4}px "Segoe UI", sans-serif`;
-  ctx.fillStyle = '#7DF9FF';
-  ctx.fillText(shipName.toUpperCase(), contentX, textY);
-  textY += baseFontSize * 1.4;
-
-  // Rank Title
-  ctx.font = `600 ${baseFontSize - 6}px "Segoe UI", monospace`;
-  ctx.fillStyle = 'rgba(255, 232, 0, 0.85)';
-  ctx.fillText(`RANK // ${rankTitle.toUpperCase()}`, contentX, textY);
-  textY += baseFontSize * 1.8;
-
-  // Active Formatted Player Name
+  // Formatted Player Name (Top Line)
+  const nameBaseSize = isBanner ? 26 : 30;
+  const nameY = cardY + 58;
   let cursorX = contentX;
-  const nameBaseSize = isBanner ? 32 : 38;
   const spans = parseMarkup(rawMarkup, '#FFFFFF');
 
   for (const span of spans) {
@@ -353,18 +347,44 @@ export function renderDestroyerCard(canvas, options = {}) {
     ctx.font = `${span.bold ? 'bold' : '600'} ${spanFontSize}px "Segoe UI", sans-serif`;
     ctx.fillStyle = span.color;
 
-    ctx.fillText(span.text, cursorX, textY);
+    ctx.fillText(span.text, cursorX, nameY);
     cursorX += ctx.measureText(span.text).width;
   }
 
-  // Footer status bar
-  textY = cardY + cardHeight - 18;
-  ctx.font = `bold ${baseFontSize - 8}px "Segoe UI", monospace`;
-  ctx.fillStyle = '#52FF3B';
-  ctx.fillText('STATUS: SUPER DESTROYER BRIDGE // READY FOR DROP', contentX, textY);
+  // Player Title (CADET)
+  const titleY = cardY + 98;
+  ctx.font = 'bold 15px "Segoe UI", sans-serif';
+  ctx.fillStyle = '#94A3B8';
+  ctx.fillText((title || 'CADET').toUpperCase(), contentX, titleY);
+
+  // Level & XP Numerics
+  const statsY = cardY + 130;
+  ctx.font = '600 15px "Segoe UI", sans-serif';
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillText(`Level ${level || '105'}`, contentX, statsY);
+
+  ctx.font = '600 14px "Segoe UI", monospace';
+  ctx.fillStyle = '#CBD5E1';
+  ctx.textAlign = 'right';
+  ctx.fillText(`${xpCurrent || '3,252'} / ${xpMax || '11,000'}`, contentX + progressWidth, statsY);
+  ctx.textAlign = 'left';
+
+  // XP Progress Bar
+  const barTrackY = cardY + 142;
+  ctx.fillStyle = '#2E3846';
+  ctx.fillRect(contentX, barTrackY, progressWidth, 5);
+
+  // Parse progress percentage
+  const curNum = parseFloat(String(xpCurrent).replace(/[^0-9.]/g, '')) || 3252;
+  const maxNum = parseFloat(String(xpMax).replace(/[^0-9.]/g, '')) || 11000;
+  const fillPct = Math.min(1, Math.max(0, curNum / maxNum));
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(contentX, barTrackY, progressWidth * fillPct, 5);
 
   ctx.restore();
 }
+
+export const renderDestroyerCard = renderNameplateCard;
 
 /**
  * Exports canvas as PNG Blob

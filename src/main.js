@@ -30,15 +30,16 @@ import {
 // Application State
 const state = {
   targetMode: 'steam', // 'steam' | 'chat'
-  previewMode: 'destroyer', // 'destroyer' | 'chat'
+  previewMode: 'nameplate', // 'nameplate' | 'chat'
   backdrop: 'desert', // 'desert' | 'tactical'
   aspectRatio: '16:9', // '16:9' | '9:16'
   currentColorHex: '#FFE800',
   currentAlphaHex: 'FF',
   selectedSquadSlot: SQUAD_SLOTS[0],
   callsign: 'blackhawks',
-  shipName: 'SES PATRIOT OF FREEDOM',
-  rankTitle: 'STAR MARSHAL',
+  playerTitle: 'CADET',
+  playerLevel: '105',
+  playerXP: '3,252 / 11,000',
   memeCaption: '',
   minify: true,
   lastHazardState: false
@@ -73,12 +74,12 @@ const elements = {
   selectPreviewMode: document.getElementById('selectPreviewMode'),
   selectBackdrop: document.getElementById('selectBackdrop'),
   selectAspectRatio: document.getElementById('selectAspectRatio'),
-  fieldShipName: document.getElementById('fieldShipName'),
-  fieldRankTitle: document.getElementById('fieldRankTitle'),
-  fieldSquadSlot: document.getElementById('fieldSquadSlot'),
-  fieldCallsign: document.getElementById('fieldCallsign'),
-  inputShipName: document.getElementById('inputShipName'),
-  inputRankTitle: document.getElementById('inputRankTitle'),
+  fieldPlayerTitle: document.getElementById('fieldPlayerTitle'),
+  fieldPlayerLevel: document.getElementById('fieldPlayerLevel'),
+  fieldPlayerXP: document.getElementById('fieldPlayerXP'),
+  inputPlayerTitle: document.getElementById('inputPlayerTitle'),
+  inputPlayerLevel: document.getElementById('inputPlayerLevel'),
+  inputPlayerXP: document.getElementById('inputPlayerXP'),
   selectSquadSlot: document.getElementById('selectSquadSlot'),
   inputCallsign: document.getElementById('inputCallsign'),
   inputMemeCaption: document.getElementById('inputMemeCaption'),
@@ -249,16 +250,21 @@ function updateUI() {
 function renderCurrentCanvas() {
   const rawMarkup = elements.rawInput.value;
 
-  if (state.previewMode === 'destroyer') {
+  if (state.previewMode === 'nameplate' || state.previewMode === 'destroyer') {
+    const parts = state.playerXP.split('/');
+    const curXP = parts[0] ? parts[0].trim() : '3,252';
+    const maxXP = parts[1] ? parts[1].trim() : '11,000';
     renderDestroyerCard(elements.memeCanvas, {
       rawMarkup,
-      shipName: state.shipName,
-      rankTitle: state.rankTitle,
+      title: state.playerTitle,
+      level: state.playerLevel,
+      xpCurrent: curXP,
+      xpMax: maxXP,
+      squadColor: state.selectedSquadSlot.color,
       memeCaption: state.memeCaption,
       backdrop: state.backdrop,
       aspectRatio: state.aspectRatio
     });
-  } else {
     renderTacticalChat(elements.memeCanvas, {
       rawMarkup,
       callsign: state.callsign,
@@ -282,9 +288,8 @@ function setTargetMode(mode) {
     elements.tabTacticalChat.classList.remove('active');
     elements.targetModeLabel.textContent = 'TARGET: STEAM NAME';
     state.previewMode = 'destroyer';
-    elements.selectPreviewMode.value = 'destroyer';
-  } else {
-    elements.tabTacticalChat.classList.add('active');
+    state.previewMode = 'nameplate';
+    elements.selectPreviewMode.value = 'nameplate';
     elements.tabSteamName.classList.remove('active');
     elements.targetModeLabel.textContent = 'TARGET: TACTICAL CHAT';
     state.previewMode = 'chat';
@@ -306,11 +311,12 @@ function setTargetMode(mode) {
  * Toggles preview form fields between Destroyer mode and Chat mode
  */
 function syncPreviewModeFields() {
-  const isDestroyer = state.previewMode === 'destroyer';
-  elements.fieldShipName.style.display = isDestroyer ? 'flex' : 'none';
-  elements.fieldRankTitle.style.display = isDestroyer ? 'flex' : 'none';
-  elements.fieldSquadSlot.style.display = isDestroyer ? 'none' : 'flex';
-  elements.fieldCallsign.style.display = isDestroyer ? 'none' : 'flex';
+  const isNameplate = state.previewMode === 'nameplate' || state.previewMode === 'destroyer';
+  elements.fieldPlayerTitle.style.display = isNameplate ? 'flex' : 'none';
+  elements.fieldPlayerLevel.style.display = isNameplate ? 'flex' : 'none';
+  elements.fieldPlayerXP.style.display = isNameplate ? 'flex' : 'none';
+  elements.fieldSquadSlot.style.display = isNameplate ? 'none' : 'flex';
+  elements.fieldCallsign.style.display = isNameplate ? 'none' : 'flex';
 }
 
 /**
@@ -422,17 +428,21 @@ function setupEvents() {
     renderCurrentCanvas();
   });
 
-  // Ship Name & Rank
-  elements.inputShipName.addEventListener('input', (e) => {
-    state.shipName = e.target.value;
+  // Player Title, Level, XP
+  elements.inputPlayerTitle.addEventListener('input', (e) => {
+    state.playerTitle = e.target.value;
     renderCurrentCanvas();
   });
-  elements.inputRankTitle.addEventListener('input', (e) => {
-    state.rankTitle = e.target.value;
+  elements.inputPlayerLevel.addEventListener('input', (e) => {
+    state.playerLevel = e.target.value;
+    renderCurrentCanvas();
+  });
+  elements.inputPlayerXP.addEventListener('input', (e) => {
+    state.playerXP = e.target.value;
     renderCurrentCanvas();
   });
 
-  // Squad Slot & Callsign
+  // Squad Position & Callsign
   elements.selectSquadSlot.addEventListener('change', (e) => {
     synth.playClick();
     const slotNum = parseInt(e.target.value, 10) || 1;
