@@ -10,6 +10,9 @@ The operational context defining character budget and visual rendering target:
 
 ### Super Destroyer Player Card
 Visual tactical simulation reproducing the Helldivers 2 ship bridge / lobby player card displaying Super Earth insignia, ship name banner (e.g. `SES PATRIOT OF FREEDOM`), military rank badge (e.g. `STAR MARSHAL`), and styled callsign.
+### Callsign Handle
+The player's username identifier displayed in the chat stream (default `blackhawks`). Dynamically paired with squad badge `[Initial][SlotIndex]` (e.g. `blackhawks` in slot 1 is `B1`, `DarkTama` in slot 1 is `D1`, `blackhawks` in slot 3 is `B3`), color-coded by squad slot index (Slot 1 Orange `#FF9900`, Slot 2 Blue `#38B6FF`, Slot 3 Pink `#FF66CC`, Slot 4 Green `#52FF3B`).
+
 
 ### Selection Toolbar
 Interactive editing controls operating on the active text selection or cursor position to inject or wrap markup tags (`<c>`, `<s>`, `<f>`, `<i>`) while supporting direct raw string editing.

@@ -4,7 +4,7 @@
  */
 
 import { parseMarkup } from '../parser/markup.js';
-
+import { getSquadBadge } from '../config/presets.js';
 export const ASPECT_RATIOS = {
   '16:9': { width: 1200, height: 675, label: '16:9 Tactical Banner' },
   '9:16': { width: 1080, height: 1920, label: '9:16 Mobile Reel' }
@@ -159,8 +159,8 @@ function drawSuperEarthEmblem(ctx, cx, cy, size = 48) {
 export function renderTacticalChat(canvas, options = {}) {
   const {
     rawMarkup = '',
-    callsign = 'fishy_gaming__',
-    squadSlot = { id: 'b1', name: 'B1', color: '#FF9900' },
+    callsign = 'blackhawks',
+    squadSlot = { slot: 1, color: '#FF9900' },
     memeCaption = '',
     backdrop = 'desert',
     aspectRatio = '16:9'
@@ -227,7 +227,7 @@ export function renderTacticalChat(canvas, options = {}) {
   // Squad Badge (e.g. B1)
   ctx.fillStyle = squadSlot.color || '#FF9900';
   ctx.font = `bold ${baseFontSize}px "Segoe UI", sans-serif`;
-  const badgeText = `${squadSlot.name || 'B1'} `;
+  const badgeText = `${getSquadBadge(callsign, squadSlot.slot || 1)} `;
   ctx.fillText(badgeText, cursorX, currentY);
   cursorX += ctx.measureText(badgeText).width;
 

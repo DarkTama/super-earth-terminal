@@ -16,7 +16,8 @@ import {
   TACTICAL_SWATCHES,
   STEAM_NAME_PRESETS,
   TACTICAL_CHAT_PRESETS,
-  SQUAD_SLOTS
+  SQUAD_SLOTS,
+  getSquadBadge
 } from './config/presets.js';
 import { TACTICAL_SYMBOLS } from './config/symbols.js';
 import {
@@ -35,7 +36,7 @@ const state = {
   currentColorHex: '#FFE800',
   currentAlphaHex: 'FF',
   selectedSquadSlot: SQUAD_SLOTS[0],
-  callsign: 'fishy_gaming__',
+  callsign: 'blackhawks',
   shipName: 'SES PATRIOT OF FREEDOM',
   rankTitle: 'STAR MARSHAL',
   memeCaption: '',
@@ -434,12 +435,14 @@ function setupEvents() {
   // Squad Slot & Callsign
   elements.selectSquadSlot.addEventListener('change', (e) => {
     synth.playClick();
-    const found = SQUAD_SLOTS.find((s) => s.id === e.target.value);
+    const slotNum = parseInt(e.target.value, 10) || 1;
+    const found = SQUAD_SLOTS.find((s) => s.slot === slotNum);
     if (found) state.selectedSquadSlot = found;
     renderCurrentCanvas();
   });
   elements.inputCallsign.addEventListener('input', (e) => {
     state.callsign = e.target.value;
+    updateSquadSlotDropdownLabels();
     renderCurrentCanvas();
   });
 
@@ -470,6 +473,24 @@ function setupEvents() {
 }
 
 /**
+ * Updates Squad position dropdown labels with first letter of callsign
+ */
+function updateSquadSlotDropdownLabels() {
+  const badge1 = getSquadBadge(state.callsign, 1);
+  const badge2 = getSquadBadge(state.callsign, 2);
+  const badge3 = getSquadBadge(state.callsign, 3);
+  const badge4 = getSquadBadge(state.callsign, 4);
+
+  const options = elements.selectSquadSlot.options;
+  if (options && options.length >= 4) {
+    options[0].textContent = `${badge1} (Orange - Squad Leader)`;
+    options[1].textContent = `${badge2} (Blue)`;
+    options[2].textContent = `${badge3} (Pink)`;
+    options[3].textContent = `${badge4} (Green)`;
+  }
+}
+
+/**
  * Bootstrap Application
  */
 function init() {
@@ -486,6 +507,7 @@ function init() {
   // Set default raw input
   elements.rawInput.value = STEAM_NAME_PRESETS[0].raw;
   syncPreviewModeFields();
+  updateSquadSlotDropdownLabels();
   updateUI();
 }
 

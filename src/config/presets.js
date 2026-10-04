@@ -134,8 +134,18 @@ export const TACTICAL_CHAT_PRESETS = [
 ];
 
 export const SQUAD_SLOTS = [
-  { id: 'b1', name: 'B1', color: '#FF9900', label: 'B1 (Orange - Host)' },
-  { id: 'p2', name: 'P2', color: '#38B6FF', label: 'P2 (Blue)' },
-  { id: 'j3', name: 'J3', color: '#FF66CC', label: 'J3 (Pink)' },
-  { id: 's4', name: 'S4', color: '#52FF3B', label: 'S4 (Green)' }
+  { slot: 1, color: '#FF9900', label: 'Slot 1 (Orange - Squad Leader)' },
+  { slot: 2, color: '#38B6FF', label: 'Slot 2 (Blue)' },
+  { slot: 3, color: '#FF66CC', label: 'Slot 3 (Pink)' },
+  { slot: 4, color: '#52FF3B', label: 'Slot 4 (Green)' }
 ];
+
+/**
+ * Returns Helldivers 2 squad badge identifier: [FirstLetter][SlotNumber]
+ * e.g. "blackhawks" in slot 1 -> "B1", "DarkTama" in slot 1 -> "D1", "blackhawks" in slot 3 -> "B3"
+ */
+export function getSquadBadge(callsign, slotNumber = 1) {
+  const clean = callsign ? callsign.trim().replace(/^[^a-zA-Z0-9]+/, '') : '';
+  const initial = clean.length > 0 ? clean.charAt(0).toUpperCase() : 'B';
+  return `${initial}${slotNumber}`;
+}
