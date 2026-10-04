@@ -77,6 +77,8 @@ const elements = {
   fieldPlayerTitle: document.getElementById('fieldPlayerTitle'),
   fieldPlayerLevel: document.getElementById('fieldPlayerLevel'),
   fieldPlayerXP: document.getElementById('fieldPlayerXP'),
+  fieldSquadSlot: document.getElementById('fieldSquadSlot'),
+  fieldCallsign: document.getElementById('fieldCallsign'),
   inputPlayerTitle: document.getElementById('inputPlayerTitle'),
   inputPlayerLevel: document.getElementById('inputPlayerLevel'),
   inputPlayerXP: document.getElementById('inputPlayerXP'),
@@ -301,8 +303,10 @@ function setTargetMode(mode) {
   syncPreviewModeFields();
   renderPresets();
 
-  // If input is empty or switching, load the top preset
-  if (!elements.rawInput.value || elements.rawInput.value === STEAM_NAME_PRESETS[0].raw || elements.rawInput.value === TACTICAL_CHAT_PRESETS[0].raw) {
+  // If input is empty or contains a preset from the previous mode, load top preset for new mode
+  const otherPresets = mode === 'steam' ? TACTICAL_CHAT_PRESETS : STEAM_NAME_PRESETS;
+  const isFromOtherPresets = otherPresets.some((p) => p.raw === elements.rawInput.value);
+  if (!elements.rawInput.value || isFromOtherPresets) {
     elements.rawInput.value = mode === 'steam' ? STEAM_NAME_PRESETS[0].raw : TACTICAL_CHAT_PRESETS[0].raw;
   }
 
@@ -314,11 +318,11 @@ function setTargetMode(mode) {
  */
 function syncPreviewModeFields() {
   const isNameplate = state.previewMode === 'nameplate' || state.previewMode === 'destroyer';
-  elements.fieldPlayerTitle.style.display = isNameplate ? 'flex' : 'none';
-  elements.fieldPlayerLevel.style.display = isNameplate ? 'flex' : 'none';
-  elements.fieldPlayerXP.style.display = isNameplate ? 'flex' : 'none';
-  elements.fieldSquadSlot.style.display = isNameplate ? 'none' : 'flex';
-  elements.fieldCallsign.style.display = isNameplate ? 'none' : 'flex';
+  if (elements.fieldPlayerTitle) elements.fieldPlayerTitle.style.display = isNameplate ? 'flex' : 'none';
+  if (elements.fieldPlayerLevel) elements.fieldPlayerLevel.style.display = isNameplate ? 'flex' : 'none';
+  if (elements.fieldPlayerXP) elements.fieldPlayerXP.style.display = isNameplate ? 'flex' : 'none';
+  if (elements.fieldSquadSlot) elements.fieldSquadSlot.style.display = isNameplate ? 'none' : 'flex';
+  if (elements.fieldCallsign) elements.fieldCallsign.style.display = isNameplate ? 'none' : 'flex';
 }
 
 /**
